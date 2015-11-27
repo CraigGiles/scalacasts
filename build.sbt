@@ -28,6 +28,7 @@ lazy val core = (project in file("core")).
 
 lazy val presentation = (project in file("presentation")).
   enablePlugins(play.PlayScala).
+  dependsOn(core % "compile->compile").
   settings(commonSettings: _*).
   settings(
     // other settings

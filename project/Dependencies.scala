@@ -17,6 +17,7 @@ object Dependencies {
   )
 
   val coreDeps = Seq(
+    akkaActor,
     scalaTest % Test
   )
 
