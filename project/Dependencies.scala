@@ -12,16 +12,18 @@ object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % versions("scalaTest")
 
   // Projects
-  val commonsDeps = Seq(
+  val base = Seq(
     scalaTest % Test
   )
 
-  val coreDeps = Seq(
-    akkaActor,
-    scalaTest % Test
+  val commons = base ++ Seq(
+    akkaActor
   )
 
-  val presentationLayer = Seq(
-    scalaTest % Test
+  val core = base ++ Seq(
+    akkaActor
+  )
+
+  val presentation = base ++ Seq(
   )
 }

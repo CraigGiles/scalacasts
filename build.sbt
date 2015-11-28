@@ -1,4 +1,3 @@
-import Dependencies._
 
 lazy val root = (project in file(".")).
   aggregate(commons, core).
@@ -16,14 +15,15 @@ lazy val commons = (project in file("commons")).
   settings(commonSettings: _*).
   settings(
     // other settings
+    libraryDependencies ++= Dependencies.commons
   )
 
 lazy val core = (project in file("core")).
-  dependsOn(commons % "compile->compile").
+  dependsOn(commons % "compile->compile;test->test").
   settings(commonSettings: _*).
   settings(
     // other settings
-    libraryDependencies ++= coreDeps
+    libraryDependencies ++= Dependencies.core
   )
 
 lazy val presentation = (project in file("presentation")).
