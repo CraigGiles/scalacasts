@@ -6,6 +6,7 @@ import com.gilesc.commons.Timestamps
 
 case class Video(id: Long,
                  title: Title,
+                 description: Description,
                  tags: Set[Tag],
                  created_at: LocalTime,
                  updated_at: LocalTime,

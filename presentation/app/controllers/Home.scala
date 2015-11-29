@@ -13,7 +13,7 @@ import play.api.mvc._
 class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
 
   def index = Action.async {
-    val response = scalacastReceptionist ? Receptionist.FindVideoByTitle("What title are you?")
+    val response = scalacastReceptionist ? Receptionist.FindVideoById(0)
 
     response.mapTo[Video].map { video =>
       Ok(views.html.index(video.toString))
