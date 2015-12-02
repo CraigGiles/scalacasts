@@ -13,7 +13,7 @@ object Receptionist {
   case class AddNewScreencast(path: String, title: String, description: String, tags: String)
   case class RemoveScreencast(title: String)
 
-  case class FindVideoByTitle(title: Title)
+  case class FindByTitle(title: String)
 
   case class Successful(boolean: Boolean)
 
@@ -29,7 +29,7 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
     case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
     case RemoveScreencast(title) => removeScreencast(title)
 
-    case FindVideoByTitle(title) => findByTitle(title)
+    case FindByTitle(title) => findByTitle(title)
     case Library.ScreencastResults(screencasts) =>
   }
 
