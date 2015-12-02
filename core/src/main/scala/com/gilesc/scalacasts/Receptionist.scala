@@ -10,6 +10,7 @@ object Receptionist {
   val name: String = "scalacasts-receptionist"
 
   case class AddNewScreencast(path: String, title: String, description: String, tags: String)
+  case class RemoveScreencast(id: Long)
 
   case class FindVideoById(id: Long)
   case class FindVideoByTitle(title: Title)
@@ -22,6 +23,7 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
 
   override def receive: Receive = {
     case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
+    case RemoveScreencast(id) => removeScreencast(id)
     case FindVideoById(id) => findById(id)
     case FindVideoByTitle(title) => findByTitle(title)
   }
@@ -32,11 +34,18 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
     // TODO: add screencast to library actor
   }
 
+  def removeScreencast(id: Long): Unit = {
+    log.info("Removing screencast {}", id)
+    // TODO: remove screencast `id from Library actor
+  }
+
   def findById(id: Long): Unit = {
-    log.info("Finding by ID {}", id)
-      sender ! Video(1, "title", "description", Set[Tag]("hey"), LocalTime.now(), LocalTime.now(), None)
+    log.info("Finding by ID: {}", id)
+    // TODO: Get the screencast at ID for caller
   }
 
   def findByTitle(title: Title): Unit = {
+    log.info("Finding by TITLE: {}", title)
+    // TODO: Get screencast with matching title for caller
   }
 }
