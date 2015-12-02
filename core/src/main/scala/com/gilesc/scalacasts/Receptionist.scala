@@ -38,12 +38,14 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
   def addNewScreencast(path: String, title: String, description: String, tags: String): Unit = {
     val screencast = Screencast(path, title, description, tags)
     log.info("Adding new screencast: {}", screencast)
+
     library ! RequestContext(Library.AddScreencast(screencast), sender())
   }
 
-  def removeScreencast(id: Long): Unit = {
-    log.info("Removing screencast {}", id)
-    // TODO: remove screencast `id from Library actor
+  def removeScreencast(title: String): Unit = {
+    log.info("Removing screencast {}", title)
+
+    library ! RequestContext(Library.RemoveScreencast(title), sender())
   }
 
   def findById(id: Long): Unit = {

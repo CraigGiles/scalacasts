@@ -7,10 +7,12 @@ object Library {
   val name: String = "scalacasts-library"
 
   case class AddScreencast(screencast: Screencast)
-  case object AllScreencasts
-  case class FindByTitle(name: Title)
+  case class RemoveScreencast(title: Title)
 
+  case class FindByTitle(name: Title)
   case class ScreencastResults(screencasts: Set[Screencast])
+
+  case object AllScreencasts
 
   def props(): Props = Props(new Library)
 }
@@ -26,16 +28,24 @@ class Library extends BaseActor {
   override def receive: Receive = {
     case Receptionist.RequestContext(request, replyTo) =>
       request match {
-        case AddScreencast(screencast) => addScreencast(screencast, replyTo)
+        case AddScreencast(screencast) => add(screencast, replyTo)
+        case RemoveScreencast(title) => remove(title, replyTo)
         case FindByTitle(title) =>
           val cast = screencasts.filter(_.title == title)
         case AllScreencasts => sender() ! ScreencastResults(screencasts)
       }
   }
 
-  def addScreencast(screencast: Screencast, replyTo: ActorRef): Unit = {
-    log.info("SUCCESS - Add Screencast: {}, replyTo: {}", screencast, replyTo.path)
+  def add(screencast: Screencast, replyTo: ActorRef): Unit = {
+    log.info("Adding Screencast to library: {}", screencast.title)
     screencasts = screencasts + screencast
+
+    replyTo ! Receptionist.Successful(true)
+  }
+
+  def remove(title: Title, replyTo: ActorRef): Unit = {
+    log.info("Removing Screencast from library: {}", title)
+    screencasts = screencasts.filterNot(_.title == title)
 
     replyTo ! Receptionist.Successful(true)
   }
