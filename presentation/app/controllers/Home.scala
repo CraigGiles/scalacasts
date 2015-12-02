@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import com.gilesc.scalacasts.Receptionist
 import com.gilesc.scalacasts.bootstrap.{AkkaTimeoutSettings, ScalacastActors}
 import models.ScreencastResource
+import play.api.Logger
 import play.api.Play.current
 import play.api.data.Forms._
 import play.api.data._
@@ -47,16 +48,22 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
           val path = s"/Users/gilesc/Desktop/tmp-$filename"
           video.ref.moveTo(new File(path), replace = true)
 
-          scalacastReceptionist ! Receptionist.AddNewScreencast(path, screencast.title, screencast.description, screencast.tags)
+          import akka.pattern.ask
+          import system.dispatcher
 
-//          Redirect(routes.Home.index()).flashing("success" -> "New Screencast Added")
+          val result = scalacastReceptionist ? Receptionist.AddNewScreencast(path, screencast.title, screencast.description, screencast.tags)
+
+          result.mapTo[Receptionist.Successful].map { message =>
+            Logger.info("LOGGER: SUCCESSFUL " + message)
+          }
+
           Ok("File Uploaded : " + screencast)
-//        Redirect(routes.Application.showContact(contactId)).flashing("success" -> "Contact saved!")
+//          Redirect(routes.Home.index()).flashing("success" -> "New Screencast Added")
+//          Redirect(routes.Application.showContact(contactId)).flashing("success" -> "Contact saved!")
         }.getOrElse {
           Redirect(routes.Home.index()).flashing("error" -> "Missing file")
         }
 
-        Ok("File Uploaded : " + screencast)
       }
     )
 

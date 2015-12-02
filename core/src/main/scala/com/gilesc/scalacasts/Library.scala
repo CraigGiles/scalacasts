@@ -1,17 +1,16 @@
 package com.gilesc.scalacasts
 
-import java.time.LocalTime
-
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
 import com.gilesc.commons.akka.BaseActor
 
 object Library {
   val name: String = "scalacasts-library"
 
-  case class AddLesson(title: Title, description: Description, tags: Set[Tag])
-  case object AllLessons
+  case class AddScreencast(screencast: Screencast)
+  case object AllScreencasts
+  case class FindByTitle(name: Title)
 
-  case class LessonResults(videos: Set[Screencast])
+  case class ScreencastResults(screencasts: Set[Screencast])
 
   def props(): Props = Props(new Library)
 }
@@ -22,15 +21,18 @@ object Library {
 class Library extends BaseActor {
   import Library._
 
-  var videos: Set[Screencast] = Set.empty[Screencast]
+  var screencasts: Set[Screencast] = Set.empty[Screencast]
 
   override def receive: Receive = {
-    case AddLesson(title, desc, tags) => addNewLesson(title, desc, tags)
-    case AllLessons => sender() ! LessonResults(videos)
+    case Receptionist.RequestContext(AddScreencast(screencast), replyTo) => addScreencast(screencast, replyTo)
+    case FindByTitle(title) =>
+      val cast = screencasts.filter(_.title == title)
+    case AllScreencasts => sender() ! ScreencastResults(screencasts)
   }
 
-  def addNewLesson(title: Title, description: Description, tags: Set[Tag]): Unit = {
+  def addScreencast(screencast: Screencast, replyTo: ActorRef): Unit = {
+    log.info("SUCCESS - Add Screencast: {}, replyTo: {}", screencast, replyTo.path)
+    screencasts = screencasts + screencast
+    replyTo ! Receptionist.Successful(true)
   }
-
-  def nextId: Long = videos.size + 1
 }

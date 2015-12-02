@@ -1,13 +1,15 @@
 package com.gilesc.scalacasts
 
-import java.time.LocalTime
-
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
+import akka.dispatch.Envelope
+import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
 
 object Receptionist {
   val name: String = "scalacasts-receptionist"
+
+  case class RequestContext(request: Any, replyTo: ActorRef)
 
   case class AddNewScreencast(path: String, title: String, description: String, tags: String)
   case class RemoveScreencast(id: Long)
@@ -15,23 +17,30 @@ object Receptionist {
   case class FindVideoById(id: Long)
   case class FindVideoByTitle(title: Title)
 
+  case class Successful(boolean: Boolean)
+
   def props(): Props = Props(new Receptionist)
 }
 
 class Receptionist extends BaseActor with AkkaTimeoutSettings {
+  import context.dispatcher
   import Receptionist._
+
+  val library = context.actorOf(Library.props(), Library.name)
 
   override def receive: Receive = {
     case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
     case RemoveScreencast(id) => removeScreencast(id)
     case FindVideoById(id) => findById(id)
+
     case FindVideoByTitle(title) => findByTitle(title)
+    case Library.ScreencastResults(screencasts) =>
   }
 
   def addNewScreencast(path: String, title: String, description: String, tags: String): Unit = {
     val screencast = Screencast(path, title, description, tags)
     log.info("Adding new screencast: {}", screencast)
-    // TODO: add screencast to library actor
+    library ! RequestContext(Library.AddScreencast(screencast), sender())
   }
 
   def removeScreencast(id: Long): Unit = {
@@ -41,11 +50,12 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
 
   def findById(id: Long): Unit = {
     log.info("Finding by ID: {}", id)
-    // TODO: Get the screencast at ID for caller
   }
 
   def findByTitle(title: Title): Unit = {
+    import context.dispatcher
+
     log.info("Finding by TITLE: {}", title)
-    // TODO: Get screencast with matching title for caller
+    library ? Library.FindByTitle(title) pipeTo self
   }
 }
