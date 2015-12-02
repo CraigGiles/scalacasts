@@ -18,7 +18,7 @@ object Library {
 }
 
 /**
-  * Library is a host for all videos on the site
+  * Library is a host for all screencasts on the site
   */
 class Library extends BaseActor {
   import Library._
