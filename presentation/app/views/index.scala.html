@@ -1,5 +1,15 @@
-@(message: String)
+@import helper._
+@(screencastForm: Form[ScreencastResource])(implicit messages: Messages)
 
-@main("Welcome to Play") {
-    @play20.welcome(message)
+@helper.form(action = routes.Home.upload, 'enctype -> "multipart/form-data") {
+
+    @inputText(screencastForm("title"))
+    @inputText(screencastForm("description"))
+    @inputText(screencastForm("tags"))
+
+    <input type="file" name="screencast">
+
+    <p>
+        <input type="submit">
+    </p>
 }

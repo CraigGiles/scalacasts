@@ -9,6 +9,8 @@ import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
 object Receptionist {
   val name: String = "scalacasts-receptionist"
 
+  case class AddNewScreencast(path: String, title: String, description: String, tags: String)
+
   case class FindVideoById(id: Long)
   case class FindVideoByTitle(title: Title)
 
@@ -16,22 +18,25 @@ object Receptionist {
 }
 
 class Receptionist extends BaseActor with AkkaTimeoutSettings {
-  val lib = context.system.actorOf(Library.props(), Library.name)
   import Receptionist._
 
   override def receive: Receive = {
+    case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
     case FindVideoById(id) => findById(id)
     case FindVideoByTitle(title) => findByTitle(title)
   }
 
+  def addNewScreencast(path: String, title: String, description: String, tags: String): Unit = {
+    val screencast = Screencast(path, title, description, tags)
+    log.info("Adding new screencast: {}", screencast)
+    // TODO: add screencast to library actor
+  }
+
   def findById(id: Long): Unit = {
-    import akka.pattern.ask
-    val results = lib ? Library.AllLessons
-    sender ! results
-      //Video(id, "random title goes here", Set[Tag]("Some", "thing", "wicked"), LocalTime.now(), LocalTime.now())
+    log.info("Finding by ID {}", id)
+      sender ! Video(1, "title", "description", Set[Tag]("hey"), LocalTime.now(), LocalTime.now(), None)
   }
 
   def findByTitle(title: Title): Unit = {
-//    sender() ! Video(1, title, Set[Tag]("Some", "time"), LocalTime.now(), LocalTime.now())
   }
 }
