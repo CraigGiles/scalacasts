@@ -11,7 +11,7 @@ object Receptionist {
   case class RequestContext(request: Any, replyTo: ActorRef)
 
   case class AddNewScreencast(path: String, title: String, description: String, tags: String)
-  case class RemoveScreencast(id: Long)
+  case class RemoveScreencast(title: String)
 
   case class FindVideoById(id: Long)
   case class FindVideoByTitle(title: Title)
@@ -28,7 +28,7 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
 
   override def receive: Receive = {
     case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
-    case RemoveScreencast(id) => removeScreencast(id)
+    case RemoveScreencast(title) => removeScreencast(title)
     case FindVideoById(id) => findById(id)
 
     case FindVideoByTitle(title) => findByTitle(title)
