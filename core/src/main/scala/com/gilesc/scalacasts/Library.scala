@@ -11,7 +11,7 @@ object Library {
   case class AddLesson(title: Title, description: Description, tags: Set[Tag])
   case object AllLessons
 
-  case class LessonResults(videos: Set[Video])
+  case class LessonResults(videos: Set[Screencast])
 
   def props(): Props = Props(new Library)
 }
@@ -22,7 +22,7 @@ object Library {
 class Library extends BaseActor {
   import Library._
 
-  var videos: Set[Video] = Set.empty[Video]
+  var videos: Set[Screencast] = Set.empty[Screencast]
 
   override def receive: Receive = {
     case AddLesson(title, desc, tags) => addNewLesson(title, desc, tags)
@@ -30,8 +30,6 @@ class Library extends BaseActor {
   }
 
   def addNewLesson(title: Title, description: Description, tags: Set[Tag]): Unit = {
-    val timestamp = LocalTime.now()
-    videos = videos + Video(nextId, title, description, tags, timestamp, timestamp, None)
   }
 
   def nextId: Long = videos.size + 1

@@ -3,16 +3,13 @@ package controllers
 import javax.inject._
 
 import akka.actor.ActorSystem
-import akka.pattern.ask
+import com.gilesc.scalacasts.Receptionist
 import com.gilesc.scalacasts.bootstrap.{AkkaTimeoutSettings, ScalacastActors}
-import com.gilesc.scalacasts.{Screencast, Receptionist, Video}
 import models.ScreencastResource
-import play.Logger
 import play.api.Play.current
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages.Implicits._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 
 @Singleton
@@ -26,12 +23,8 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
     )(ScreencastResource.apply)(ScreencastResource.unapply)
   )
 
-  def index = Action.async {
-    val response = scalacastReceptionist ? Receptionist.FindVideoById(0)
-
-    response.mapTo[Video].map { video =>
-      Ok(views.html.index(screencastResource))
-    }
+  def index = Action {
+    Ok(views.html.index(screencastResource))
   }
 
   def upload = Action(parse.multipartFormData) { implicit request =>
