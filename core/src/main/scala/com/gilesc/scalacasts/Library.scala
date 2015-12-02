@@ -24,15 +24,24 @@ class Library extends BaseActor {
   var screencasts: Set[Screencast] = Set.empty[Screencast]
 
   override def receive: Receive = {
-    case Receptionist.RequestContext(AddScreencast(screencast), replyTo) => addScreencast(screencast, replyTo)
-    case FindByTitle(title) =>
-      val cast = screencasts.filter(_.title == title)
-    case AllScreencasts => sender() ! ScreencastResults(screencasts)
+    case msg: Receptionist.RequestContext => unwrapContext(msg)
+  }
+
+  def unwrapContext(cxt: Receptionist.RequestContext): Unit = {
+    val replyTo = cxt.replyTo
+
+    cxt.request match {
+      case AddScreencast(screencast) => addScreencast(screencast, replyTo)
+      case FindByTitle(title) =>
+        val cast = screencasts.filter(_.title == title)
+      case AllScreencasts => sender() ! ScreencastResults(screencasts)
+    }
   }
 
   def addScreencast(screencast: Screencast, replyTo: ActorRef): Unit = {
     log.info("SUCCESS - Add Screencast: {}, replyTo: {}", screencast, replyTo.path)
     screencasts = screencasts + screencast
+
     replyTo ! Receptionist.Successful(true)
   }
 }

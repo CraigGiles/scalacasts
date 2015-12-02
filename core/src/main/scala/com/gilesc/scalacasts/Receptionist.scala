@@ -1,7 +1,6 @@
 package com.gilesc.scalacasts
 
 import akka.actor.{ActorRef, Props}
-import akka.dispatch.Envelope
 import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
@@ -23,7 +22,6 @@ object Receptionist {
 }
 
 class Receptionist extends BaseActor with AkkaTimeoutSettings {
-  import context.dispatcher
   import Receptionist._
 
   val library = context.actorOf(Library.props(), Library.name)
