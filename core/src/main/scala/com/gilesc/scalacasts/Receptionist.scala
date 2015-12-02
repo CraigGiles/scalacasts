@@ -10,7 +10,7 @@ object Receptionist {
 
   case class RequestContext(request: Any, replyTo: ActorRef)
 
-  case class AddNewScreencast(path: String, title: String, description: String, tags: String)
+  case class AddNewScreencast(path: String, contentType: String, title: String, description: String, tags: String)
   case class RemoveScreencast(title: String)
 
   case class FindByTitle(title: String)
@@ -26,15 +26,15 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
   val library = context.actorOf(Library.props(), Library.name)
 
   override def receive: Receive = {
-    case AddNewScreencast(path, title, desc, tags) => addNewScreencast(path, title, desc, tags)
+    case AddNewScreencast(path, contentType, title, desc, tags) => addNewScreencast(path, contentType, title, desc, tags)
     case RemoveScreencast(title) => removeScreencast(title)
 
     case FindByTitle(title) => findByTitle(title)
     case Library.ScreencastResults(screencasts) =>
   }
 
-  def addNewScreencast(path: String, title: String, description: String, tags: String): Unit = {
-    val screencast = Screencast(path, title, description, tags)
+  def addNewScreencast(path: String, contentType: String, title: String, description: String, tags: String): Unit = {
+    val screencast = Screencast(path, contentType, title, description, tags)
     log.info("Adding new screencast: {}", screencast)
 
     library ! RequestContext(Library.AddScreencast(screencast), sender())

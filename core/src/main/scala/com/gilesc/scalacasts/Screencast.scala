@@ -5,11 +5,12 @@ import java.time.LocalTime
 import com.gilesc.commons.Timestamps
 
 object Screencast {
-  def apply(path: String, title: String, description: String, tags: String): Screencast = {
+  def apply(path: String, contentType: String, title: String, description: String, tags: String): Screencast = {
     val timestamp = LocalTime.now()
 
     new Screencast(
       filePath = path,
+      contentType = contentType,
       title = title,
       description = description,
       tags = tags.split(",").map(t => Tag(t.trim)).toSet,
@@ -20,6 +21,7 @@ object Screencast {
 }
 
 case class Screencast(filePath: String,
+                      contentType: ContentType,
                       title: Title,
                       description: Description,
                       tags: Set[Tag],
