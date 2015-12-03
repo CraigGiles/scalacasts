@@ -29,7 +29,15 @@ class Home @Inject()(val system: ActorSystem) extends Controller with AkkaTimeou
   )
 
   def index = Action {
-    Ok(views.html.index(screencastResource))
+    Ok(views.html.home.index())
+  }
+
+  def about = Action {
+    Ok(views.html.home.about())
+  }
+
+  def contact = Action {
+    Ok(views.html.home.contact(screencastResource))
   }
 
   def upload = Action(parse.multipartFormData) { implicit request =>
@@ -38,7 +46,7 @@ class Home @Inject()(val system: ActorSystem) extends Controller with AkkaTimeou
 
     screencastResource.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.index(formWithErrors))
+        BadRequest(views.html.home.contact(formWithErrors))
       },
 
       screencast => request.body.file("screencast").map { video =>

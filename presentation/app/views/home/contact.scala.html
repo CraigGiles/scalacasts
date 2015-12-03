@@ -1,0 +1,29 @@
+@import helper._
+@(screencastForm: Form[ScreencastResource])(implicit messages: Messages)
+
+@layout.default.main("ScalaCasts") {
+<!-- Main text area -->
+<div class="jumbotron">
+    <h3>Contact Information:</h3>
+    <p>
+        This website is developed and maintained by Craig Giles:
+    <ul>
+        <li>Email: craiggiles9@@gmail.com</li>
+        <li>Github: <a href="http://www.github.com/craiggiles/">http://www.github.com/craiggiles/</a></li>
+    </ul>
+    </p>
+
+    @helper.form(action = routes.Home.upload, 'enctype -> "multipart/form-data") {
+
+        @inputText(screencastForm("title"))
+        @inputText(screencastForm("description"))
+        @inputText(screencastForm("tags"))
+
+        <input type="file" name="screencast">
+
+        <p>
+            <input type="submit">
+        </p>
+    }
+</div>
+}

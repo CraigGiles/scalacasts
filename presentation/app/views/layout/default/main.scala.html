@@ -1,0 +1,19 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@title</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+@layout.default.partial.navbar()
+
+<div class="body">
+    @content
+</div>
+
+@layout.default.partial.footer()
+</body>
+</html>

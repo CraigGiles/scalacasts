@@ -1,0 +1,73 @@
+
+
+
+@layout.default.main("ScalaCasts") {
+    <link type="text/css" rel="stylesheet" href="@routes.Assets.at("stylesheets/home/index.css")" />
+
+    <!-- Main text area -->
+    @*<div class="jumbotron">*@
+        <div class="container">
+            <h1>Welcome to ScalaCasts!</h1>
+            <image src="@routes.Assets.at("images/playlogo.png")" width=175.8, height=60 align=right>
+            <p>
+                This is a website for learning the PlayFramework. Written in Scala,
+                this webiste will model other well known "casts" website such as
+                vimcasts for vim, railscasts for ruby on rails, and laracasts
+                for laravel.
+            </p>
+            <p>
+                <a class="btn btn-primary btn-lg btn-home" role="button">Log in</a>
+                <a class="btn btn-primary btn-lg btn-home" role="button">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Video content -->
+            <div class="col-md-4">
+                <h2>Videos</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
+                    ultrices nunc lacinia mauris vehicula, tincidunt ultrices ipsum
+                    ullamcorper. Fusce vulputate nibh eleifend sem sagittis accumsan.
+                </p>
+
+                <p>
+                    <a class="btn btn-default" href="#" role="button">View Videos &raquo;</a>
+                </p>
+            </div>
+
+            <!-- Text articals -->
+            <div class="col-md-4">
+                <h2>Articles</h2>
+
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ultrices
+                    nunc lacinia mauris vehicula, tincidunt ultrices ipsum ullamcorper.
+                    Fusce vulputate nibh eleifend sem sagittis accumsan. Donec tincidunt
+                    nibh vel leo pharetra malesuada. Duis lacinia aliquet orci nec ultrices.
+                </p>
+
+                <p>
+                    <a class="btn btn-default" href="#" role="button">View Articles &raquo;</a>
+                </p>
+            </div>
+
+            <!-- Github repositories -->
+            <div class="col-md-4">
+                <h2>Github Repositories</h2>
+                <p>
+                    All repositories for this website and others are located on my personal
+                    github page
+                </p>
+
+                <p>
+                    <a class="btn btn-default" href="http://www.github.com/craiggiles/" role="button">View Github &raquo;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    @*</div>*@
+
+}
