@@ -15,17 +15,17 @@ object Screencast {
       description = description,
       tags = tags.split(",").map(t => Tag(t.trim)).toSet,
       created_at = timestamp,
-      updated_at = timestamp
-    )
+      updated_at = timestamp)
   }
 }
 
-case class Screencast(filePath: String,
-                      contentType: ContentType,
-                      title: Title,
-                      description: Description,
-                      tags: Set[Tag],
-                      created_at: LocalTime,
-                      updated_at: LocalTime,
-                      deleted_at: Option[LocalTime] = None) extends Timestamps
+case class Screencast(
+  filePath: String,
+  contentType: ContentType,
+  title: Title,
+  description: Description,
+  tags: Set[Tag],
+  created_at: LocalTime,
+  updated_at: LocalTime,
+  deleted_at: Option[LocalTime] = None) extends Timestamps
 

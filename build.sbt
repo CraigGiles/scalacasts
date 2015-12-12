@@ -1,14 +1,20 @@
+enablePlugins(JavaServerAppPackaging)
 
+// Project settings
 lazy val root = (project in file(".")).
-  aggregate(commons, core).
+aggregate(commons, core).
   settings(
     aggregate in update := false
   )
 
 lazy val commonSettings = Seq(
+  // Organization Settings
   organization := "com.gilesc",
   version := "0.0.1",
-  scalaVersion := "2.11.7"
+  scalaVersion := "2.11.7",
+
+  // Scalaform Settings
+  Scalaform.scalaformSettings
 )
 
 lazy val commons = (project in file("commons")).
