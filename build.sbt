@@ -39,3 +39,12 @@ lazy val presentation = (project in file("presentation")).
   settings(
     // other settings
   )
+
+javaOptions in Universal ++= Seq(
+  // JVM memory tuning
+  "-J-Xmx1024m",
+  "-J-Xms512m",
+
+  // You may also want to include this setting if you use play evolutions
+  "-DapplyEvolutions.default=true"
+)
