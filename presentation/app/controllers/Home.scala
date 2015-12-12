@@ -15,7 +15,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
 
 @Singleton
-class Home @Inject()(val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
+class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
 
   import akka.pattern.ask
   import system.dispatcher
@@ -24,9 +24,7 @@ class Home @Inject()(val system: ActorSystem) extends Controller with AkkaTimeou
     mapping(
       "title" -> text,
       "description" -> text,
-      "tags" -> text
-    )(ScreencastResource.apply)(ScreencastResource.unapply)
-  )
+      "tags" -> text)(ScreencastResource.apply)(ScreencastResource.unapply))
 
   def index = Action {
     Ok(views.html.home.index())

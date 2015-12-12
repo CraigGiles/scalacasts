@@ -2,7 +2,7 @@ enablePlugins(JavaServerAppPackaging)
 
 // Project settings
 lazy val root = (project in file(".")).
-aggregate(commons, core).
+aggregate(commons, core, presentation).
   settings(
     aggregate in update := false
   )
@@ -38,6 +38,7 @@ lazy val presentation = (project in file("presentation")).
   settings(commonSettings: _*).
   settings(
     // other settings
+    libraryDependencies ++= Dependencies.presentation
   )
 
 javaOptions in Universal ++= Seq(
