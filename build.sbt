@@ -2,10 +2,12 @@ enablePlugins(JavaServerAppPackaging)
 
 // Project settings
 lazy val root = (project in file(".")).
-aggregate(commons, core, presentation).
+  settings(commonSettings: _*).
+  settings(unidocSettings: _*).
   settings(
     aggregate in update := false
-  )
+  ).
+  aggregate(commons, core, presentation)
 
 lazy val commonSettings = Seq(
   // Organization Settings
