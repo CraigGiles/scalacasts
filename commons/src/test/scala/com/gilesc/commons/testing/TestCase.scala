@@ -11,4 +11,6 @@ import Matchers._
 abstract class TestCase extends TestKit(ActorSystem("testsystem"))
     with WordSpecLike with Matchers {
 
+      //TODO: change "testsystem" to config
+
 }
