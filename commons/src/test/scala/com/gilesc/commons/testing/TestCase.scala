@@ -9,8 +9,8 @@ import org.scalatest.Matchers._
 import Matchers._
 
 abstract class TestCase extends TestKit(ActorSystem("testsystem"))
-    with WordSpecLike with Matchers {
+    with WordSpecLike with Matchers with GivenWhenThen {
 
-      //TODO: change "testsystem" to config
+  //TODO: change "testsystem" to config
 
 }
