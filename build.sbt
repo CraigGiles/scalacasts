@@ -12,7 +12,9 @@ lazy val root = BuildUtils.rootProject.
 
 lazy val commons = BuildUtils.createSubProject("commons").
   settings(
-    AkkaDeps.settings
+    AkkaDeps.settings,
+
+    libraryDependencies ++= Dependencies.backend
   )
 
 lazy val backend = BuildUtils.createSubProject("backend").

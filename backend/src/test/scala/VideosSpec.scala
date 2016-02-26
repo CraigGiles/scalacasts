@@ -1,7 +1,9 @@
-import com.gilesc.commons.testing.TestSpec
+import com.gilesc.commons.testing.TestCase
 
-class VideosSpec extends TestSpec {
-  "Videos" should "have proper meta data" in {
+class VideosSpec extends TestCase {
+  "Videos" should {
+    "have proper meta data" in {
 
+    }
   }
 }
