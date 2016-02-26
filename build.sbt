@@ -6,24 +6,28 @@ lazy val root = (project in file(".")).
   settings(
     aggregate in update := false
   ).
-  aggregate(commons, core, presentation)
+  aggregate(commons, backend, presentation)
 
 lazy val commons = Common.createProject("commons").
   settings(
-    // other settings
+    AkkaDeps.settings,
+
+    // commons specific settings
     libraryDependencies ++= Dependencies.commons
   )
 
-lazy val core = Common.createProject("core").
+lazy val backend = Common.createProject("backend").
   dependsOn(commons % "compile->compile;test->test").
   settings(
-    // other settings
+    AkkaDeps.settings,
+
+    // Scalacasts specific settings
     libraryDependencies ++= Dependencies.core
   )
 
 lazy val presentation = Common.createProject("presentation").
   enablePlugins(play.PlayScala).
-  dependsOn(core % "compile->compile").
+  dependsOn(backend % "compile->compile").
   settings(
     // other settings
     libraryDependencies ++= Dependencies.presentation
