@@ -10,6 +10,11 @@ lazy val root = BuildUtils.rootProject.
   ).
   aggregate(commons, backend, presentation)
 
+lazy val commons = BuildUtils.createSubProject("commons").
+  settings(
+    AkkaDeps.settings
+  )
+
 lazy val backend = BuildUtils.createSubProject("backend").
   dependsOn(commons % "compile->compile;test->test").
   settings(
@@ -17,11 +22,9 @@ lazy val backend = BuildUtils.createSubProject("backend").
 
     // Scalacasts specific settings
     libraryDependencies ++= Dependencies.backend
-  ).
-  configs(IntegrationTest).
-  settings(Defaults.itSettings: _*)
+  )
 
-lazy val frontend = BuildUtils.createSubProject("frontend").
+lazy val presentation = BuildUtils.createSubProject("presentation").
   enablePlugins(play.PlayScala).
   configs(IntegrationTest).
   settings(Defaults.itSettings: _*).

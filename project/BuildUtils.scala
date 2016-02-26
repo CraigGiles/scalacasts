@@ -19,7 +19,9 @@ object BuildUtils {
     settings(commonSettings: _*)
 
   def createSubProject(name: String) = {
-    Project(name, file(name)).
-    settings(commonSettings: _*)
+    Project(name, file(name))
+    .configs(IntegrationTest)
+    .settings(Defaults.itSettings: _*)
+    .settings(commonSettings: _*)
   }
 }
