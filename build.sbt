@@ -1,36 +1,39 @@
 enablePlugins(JavaServerAppPackaging)
 
 // Project settings
-lazy val root = (project in file(".")).
+lazy val root = BuildUtils.rootProject.
   settings(unidocSettings: _*).
   settings(
-    aggregate in update := false
+    name := "scalacasts",
+    aggregate in update := false,
+    Revolver.settings
   ).
   aggregate(commons, backend, presentation)
 
-lazy val commons = Common.createProject("commons").
+lazy val commons = BuildUtils.createSubProject("commons").
   settings(
     AkkaDeps.settings,
 
-    // commons specific settings
-    libraryDependencies ++= Dependencies.commons
+    libraryDependencies ++= Dependencies.backend
   )
 
-lazy val backend = Common.createProject("backend").
+lazy val backend = BuildUtils.createSubProject("backend").
   dependsOn(commons % "compile->compile;test->test").
   settings(
     AkkaDeps.settings,
 
     // Scalacasts specific settings
-    libraryDependencies ++= Dependencies.core
+    libraryDependencies ++= Dependencies.backend
   )
 
-lazy val presentation = Common.createProject("presentation").
+lazy val presentation = BuildUtils.createSubProject("presentation").
   enablePlugins(play.PlayScala).
+  configs(IntegrationTest).
+  settings(Defaults.itSettings: _*).
   dependsOn(backend % "compile->compile").
   settings(
     // other settings
-    libraryDependencies ++= Dependencies.presentation
+    libraryDependencies ++= Dependencies.frontend
   )
 
 javaOptions in Universal ++= Seq(
