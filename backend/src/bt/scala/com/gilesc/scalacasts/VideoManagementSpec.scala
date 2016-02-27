@@ -25,13 +25,13 @@ class VideoManagementSpec extends TestCase {
       val title = Title("My Test Video")
       val description = Description("A test video for the library")
       val tags = Set(Tag("test"), Tag("screencast"))
-      val sc = ScreencastContext(path, contentType, title, description, tags)
+      val cxt = ScreencastContext(path, contentType, title, description, tags)
 
       when("the video gets uploaded")
-      receptionist ! Scalacasts.AddNewScreencast(sc)
+      receptionist ! Scalacasts.AddNewScreencast(cxt)
 
       then("the video appears in the library with proper meta information")
-      val results = receptionist ? Scalacasts.FindByTitle(sc.title)
+      val results = receptionist ? Scalacasts.FindByTitle(cxt.title)
 
       results.map { result =>
         val list = result.asInstanceOf[Seq[Screencast]]
