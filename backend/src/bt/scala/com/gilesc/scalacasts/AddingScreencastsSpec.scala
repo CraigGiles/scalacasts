@@ -11,14 +11,13 @@ import scala.util.Success
 import com.gilesc.commons.testing.TestCase
 import com.gilesc.scalacasts.screencast.ScreencastContext
 
-class VideoManagementSpec extends TestCase {
+class AddingScreencastsSpec extends TestCase {
   import scala.concurrent.ExecutionContext.Implicits.global
   implicit val timeout = Timeout(10 seconds)
 
-  "The video management system" should {
-    "be able to upload a video to the video library" in {
+  "uploading a new video to the system" should {
+    "store the videos meta information in the video library" in {
 
-      given("the user gives the video information to the system")
       val receptionist = TestActorRef(new Scalacasts)
       val path = "./path/to/myvideo001.mov"
       val contentType = ContentType("mov")
@@ -27,20 +26,17 @@ class VideoManagementSpec extends TestCase {
       val tags = Set(Tag("test"), Tag("screencast"))
       val cxt = ScreencastContext(path, contentType, title, description, tags)
 
-      when("the video gets uploaded")
       receptionist ! Scalacasts.AddNewScreencast(cxt)
 
-      then("the video appears in the library with proper meta information")
-      val results = receptionist ? Scalacasts.FindByTitle(cxt.title)
+      val resultsFut = receptionist ? Scalacasts.FindByTitle(cxt.title)
+      val Success(results: Scalacasts.ScreencastResults) = resultsFut.value.get
 
-      results.map { result =>
-        val list = result.asInstanceOf[Seq[Screencast]]
-        list.size should be(1)
-        list.head.title should be(title)
-        list.head.description should be(description)
-        list.head.tags should be(tags)
-        list.head.filePath should be(path)
-      }
+      results.screencasts.size should be(1)
+      results.screencasts.head.title should be(title)
+      results.screencasts.head.description should be(description)
+      results.screencasts.head.tags should be(tags)
+      results.screencasts.head.filePath should be(path)
     }
+
   }
 }

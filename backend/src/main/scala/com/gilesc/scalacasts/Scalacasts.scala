@@ -12,6 +12,9 @@ object Scalacasts {
 
   case class AddNewScreencast(cxt: ScreencastContext)
   case class FindByTitle(title: Title)
+  case class FindByTags(tags: Set[Tag])
+
+  case class ScreencastResults(screencasts: Seq[Screencast])
 
   def props(): Props = Props(new Scalacasts)
 }
@@ -24,6 +27,7 @@ class Scalacasts extends BaseActor with AkkaTimeoutSettings {
   def receive: Receive = {
     case AddNewScreencast(cxt: ScreencastContext) => addScreencast(cxt)
     case FindByTitle(title) => findByTitle(title)
+    case FindByTags(tags) => findByTags(tags)
   }
 
   /**
@@ -39,6 +43,19 @@ class Scalacasts extends BaseActor with AkkaTimeoutSettings {
     * @param title Title
     */
   def findByTitle(title: Title): Unit = {
-    sender() ! screencasts.filter(_.title == title)
+    sender() ! ScreencastResults(screencasts.filter(_.title == title))
+  }
+
+  def findByTags(tags: Set[Tag]): Unit = {
+    var results = Seq.empty[Screencast]
+
+    screencasts.foreach { screencast =>
+      tags.foreach { tag =>
+        if (screencast.tags.contains(tag) && !results.contains(screencast))
+          results = results :+ screencast
+      }
+    }
+
+    sender() ! ScreencastResults(results)
   }
 }
