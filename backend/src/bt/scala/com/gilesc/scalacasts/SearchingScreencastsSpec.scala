@@ -19,14 +19,17 @@ class SearchingScreencastsSpec extends TestCase {
   val contentType = ContentType("mov")
   val title = Title("My Test Video")
   val description = Description("A test video for the library")
-  val tags01 = Set(Tag("all"), Tag("one"), Tag("double"))
-  val tags02 = Set(Tag("all"), Tag("two"), Tag("double"))
-  val tags03 = Set(Tag("all"), Tag("three"))
+  val alltag = Tag("all")
+  val doubletag = Tag("double")
+  val threetag = Tag("three")
+  val nonetag = Tag("none")
+
+  val tags01 = Set(alltag, Tag("one"), doubletag)
+  val tags02 = Set(alltag, doubletag, Tag("two"))
+  val tags03 = Set(alltag, threetag)
   val cxt01 = ScreencastContext(path, contentType, "001", description, tags01)
   val cxt02 = ScreencastContext(path, contentType, "002", description, tags02)
   val cxt03 = ScreencastContext(path, contentType, "003", description, tags03)
-  val alltag = Tag("all")
-  val doubletag = Tag("double")
 
   "finding screencasts by tag" should {
     "returns the proper amount of videos when tags are requested" in {
@@ -36,8 +39,8 @@ class SearchingScreencastsSpec extends TestCase {
       scalacasts ! Scalacasts.AddNewScreencast(cxt02)
       scalacasts ! Scalacasts.AddNewScreencast(cxt03)
 
-      val allTagFut = scalacasts ? Scalacasts.FindByTags(Set(alltag))
-      val Success(results: Scalacasts.ScreencastResults) = allTagFut.value.get
+      val future = scalacasts ? Scalacasts.FindByTags(Set(alltag))
+      val Success(results: Scalacasts.ScreencastResults) = future.value.get
 
       results.screencasts.size should be(3)
       results.screencasts.foreach { item =>
@@ -58,8 +61,21 @@ class SearchingScreencastsSpec extends TestCase {
       results.screencasts.size should be(2)
       results.screencasts.foreach { item =>
         item.tags.contains(doubletag) should be(true)
-        item.tags.contains(Tag("three")) should be(false)
+        item.tags.contains(threetag) should be(false)
       }
+    }
+
+    "return an empty-set result if no tags are found" in {
+      val scalacasts = TestActorRef(new Scalacasts)
+
+      scalacasts ! Scalacasts.AddNewScreencast(cxt01)
+      scalacasts ! Scalacasts.AddNewScreencast(cxt02)
+      scalacasts ! Scalacasts.AddNewScreencast(cxt03)
+
+      val future = scalacasts ? Scalacasts.FindByTags(Set(nonetag))
+      val Success(results: Scalacasts.ScreencastResults) = future.value.get
+
+      results.screencasts.isEmpty should be(true)
     }
   }
 }
