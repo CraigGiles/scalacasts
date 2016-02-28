@@ -52,8 +52,8 @@ class SearchingScreencastsSpec extends TestCase {
       scalacasts ! Scalacasts.AddNewScreencast(cxt02)
       scalacasts ! Scalacasts.AddNewScreencast(cxt03)
 
-      val doubleTagFut = scalacasts ? Scalacasts.FindByTags(Set(doubletag))
-      val Success(results: Scalacasts.ScreencastResults) = doubleTagFut.value.get
+      val future = scalacasts ? Scalacasts.FindByTags(Set(doubletag))
+      val Success(results: Scalacasts.ScreencastResults) = future.value.get
 
       results.screencasts.size should be(2)
       results.screencasts.foreach { item =>
