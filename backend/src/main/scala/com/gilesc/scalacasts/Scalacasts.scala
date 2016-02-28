@@ -30,18 +30,10 @@ class Scalacasts extends BaseActor with AkkaTimeoutSettings {
     case FindByTags(tags) => findByTags(tags)
   }
 
-  /**
-    * Constructs and adds a Screencast object to the library
-    * @param cxt ScreencastContext
-    */
   def addScreencast(cxt: ScreencastContext): Unit = {
     screencasts = screencasts :+ Screencast(cxt)
   }
 
-  /**
-    * Returns a Seq of Screencast objects which match the given title
-    * @param title Title
-    */
   def findByTitle(title: Title): Unit = {
     sender() ! ScreencastResults(screencasts.filter(_.title == title))
   }
