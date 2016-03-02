@@ -14,15 +14,15 @@ object BuildUtils {
     scalaVersion := "2.11.7",
 
     // Scalaform Settings
-    Scalaform.scalaformSettings
+    Scalaform.settings
   )
 
   lazy val rootProject = (project in file(".")).
-    settings(commonSettings: _*)
-    .configs(IntegrationTest)
+    configs(IntegrationTest)
     .configs(BehaviorTest)
     .settings(inConfig(BehaviorTest)(Defaults.testSettings) : _*)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings) : _*)
+    .settings(commonSettings: _*)
 
   def createSubProject(name: String) = {
     Project(name, file(name))
