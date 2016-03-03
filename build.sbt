@@ -1,7 +1,9 @@
+import com.gilesc._
+
 enablePlugins(JavaServerAppPackaging)
 
 // Project settings
-lazy val root = BuildUtils.rootProject.
+lazy val root = GilescSbt.rootProject.
   settings(unidocSettings: _*).
   settings(
     name := "scalacasts",
@@ -10,14 +12,14 @@ lazy val root = BuildUtils.rootProject.
   ).
   aggregate(commons, backend, presentation)
 
-lazy val commons = BuildUtils.createSubProject("commons").
+lazy val commons = GilescSbt.createSubProject("commons").
   settings(
     AkkaDeps.settings,
 
     libraryDependencies ++= Dependencies.backend
   )
 
-lazy val backend = BuildUtils.createSubProject("backend").
+lazy val backend = GilescSbt.createSubProject("backend").
   dependsOn(commons % "compile->compile;test->test").
   settings(
     AkkaDeps.settings,
@@ -26,7 +28,7 @@ lazy val backend = BuildUtils.createSubProject("backend").
     libraryDependencies ++= Dependencies.backend
   )
 
-lazy val presentation = BuildUtils.createSubProject("presentation").
+lazy val presentation = GilescSbt.createSubProject("presentation").
   enablePlugins(play.PlayScala).
   configs(IntegrationTest).
   settings(Defaults.itSettings: _*).
