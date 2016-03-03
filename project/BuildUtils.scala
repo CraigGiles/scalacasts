@@ -2,7 +2,7 @@ import sbt._
 import sbt.Keys._
 import com.gilesc._
 
-import com.gilesc.Scalaform
+import com.gilesc.ScalaFormatter
 
 object BuildUtils {
   lazy val BehaviorTest = config("bt") extend(Test)
@@ -14,7 +14,7 @@ object BuildUtils {
     scalaVersion := "2.11.7",
 
     // Scalaform Settings
-    Scalaform.settings
+    ScalaFormatter.settings
   )
 
   lazy val rootProject = (project in file(".")).
