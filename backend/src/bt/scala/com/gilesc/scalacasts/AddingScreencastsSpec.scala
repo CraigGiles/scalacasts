@@ -10,6 +10,7 @@ import scala.util.Success
 
 import com.gilesc.commons.testing.TestCase
 import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.Receptionist
 
 class AddingScreencastsSpec extends TestCase {
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,7 +19,7 @@ class AddingScreencastsSpec extends TestCase {
   "uploading a new video to the system" should {
     "store the videos meta information in the video library" in {
 
-      val receptionist = TestActorRef(new Scalacasts)
+      val receptionist = TestActorRef(new Receptionist)
       val path = "./path/to/myvideo001.mov"
       val contentType = ContentType("mov")
       val title = Title("My Test Video")
@@ -26,10 +27,12 @@ class AddingScreencastsSpec extends TestCase {
       val tags = Set(Tag("test"), Tag("screencast"))
       val cxt = ScreencastContext(path, contentType, title, description, tags)
 
-      receptionist ! Scalacasts.AddNewScreencast(cxt)
+      val addFut = receptionist ? Receptionist.AddNewScreencast(cxt)
+      val Success(addResult: Receptionist.Successful) = addFut.value.get
+      addResult.isSuccessful should be(true)
 
-      val resultsFut = receptionist ? Scalacasts.FindByTitle(cxt.title)
-      val Success(results: Scalacasts.ScreencastResults) = resultsFut.value.get
+      val resultsFut = receptionist ? Receptionist.FindByTitle(cxt.title)
+      val Success(results: Receptionist.ScreencastResults) = resultsFut.value.get
 
       results.screencasts.size should be(1)
       results.screencasts.head.title should be(title)

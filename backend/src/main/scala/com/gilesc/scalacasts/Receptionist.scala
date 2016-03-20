@@ -4,18 +4,18 @@ import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
+import com.gilesc.scalacasts.screencast.ScreencastContext
 
 object Receptionist {
   val name: String = "scalacasts-receptionist"
 
-  case class RequestContext(request: Any, replyTo: ActorRef)
+  case class AddNewScreencast(cxt: ScreencastContext)
 
-  case class AddNewScreencast(path: String, contentType: String, title: String, description: String, tags: String)
-  case class RemoveScreencast(title: String)
+  case class FindByTitle(title: Title)
+  case class FindByTags(tags: Set[Tag])
+  case class ScreencastResults(screencasts: Seq[Screencast])
 
-  case class FindByTitle(title: String)
-
-  case class Successful(boolean: Boolean)
+  case class Successful(isSuccessful: Boolean)
 
   def props(): Props = Props(new Receptionist)
 }
@@ -23,33 +23,34 @@ object Receptionist {
 class Receptionist extends BaseActor with AkkaTimeoutSettings {
   import Receptionist._
 
-  val library = context.actorOf(Library.props(), Library.name)
+  var screencasts = Seq.empty[Screencast]
+  // val library = context.actorOf(Library.props(), Library.name)
 
   override def receive: Receive = {
-    case AddNewScreencast(path, contentType, title, desc, tags) => addNewScreencast(path, contentType, title, desc, tags)
-    case RemoveScreencast(title) => removeScreencast(title)
-
+    case AddNewScreencast(cxt: ScreencastContext) => addScreencast(cxt)
     case FindByTitle(title) => findByTitle(title)
-    case Library.ScreencastResults(screencasts) =>
+    case FindByTags(tags) => findByTags(tags)
   }
 
-  def addNewScreencast(path: String, contentType: String, title: String, description: String, tags: String): Unit = {
-    val screencast = Screencast(path, contentType, title, description, tags)
-    log.info("Adding new screencast: {}", screencast)
-
-    library ! RequestContext(Library.AddScreencast(screencast), sender())
-  }
-
-  def removeScreencast(title: String): Unit = {
-    log.info("Removing screencast {}", title)
-
-    library ! RequestContext(Library.RemoveScreencast(title), sender())
+  def addScreencast(cxt: ScreencastContext): Unit = {
+    screencasts = screencasts :+ Screencast(cxt)
+    sender() ! Successful(true)
   }
 
   def findByTitle(title: Title): Unit = {
-    import context.dispatcher
+    sender() ! ScreencastResults(screencasts.filter(_.title == title))
+  }
 
-    log.info("Finding by TITLE: {}", title)
-    library ? Library.FindByTitle(title) pipeTo self
+  def findByTags(tags: Set[Tag]): Unit = {
+    var results = Seq.empty[Screencast]
+
+    screencasts.foreach { screencast =>
+      tags.foreach { tag =>
+        if (screencast.tags.contains(tag) && !results.contains(screencast))
+          results = results :+ screencast
+      }
+    }
+
+    sender() ! ScreencastResults(results)
   }
 }
