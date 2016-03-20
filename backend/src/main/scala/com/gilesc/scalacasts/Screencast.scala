@@ -19,16 +19,8 @@ object Screencast {
   }
 
   def apply(path: String, contentType: String, title: String, description: String, tags: String): Screencast = {
-    val timestamp = LocalTime.now()
-
-    new Screencast(
-      filePath = path,
-      contentType = contentType,
-      title = title,
-      description = description,
-      tags = tags.split(",").map(t => Tag(t.trim)).toSet,
-      created_at = timestamp,
-      updated_at = timestamp)
+    val cxt = ScreencastContext(path, contentType, title, description, tags)
+    Screencast.apply(cxt)
   }
 }
 

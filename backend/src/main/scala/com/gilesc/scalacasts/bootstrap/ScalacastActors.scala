@@ -6,5 +6,6 @@ import com.gilesc.scalacasts.Receptionist
 trait ScalacastActors {
   val system: ActorSystem
 
-  val scalacastReceptionist = system.actorOf(Receptionist.props(), Receptionist.name)
+  val scalacastReceptionist =
+    system.actorOf(Receptionist.props(), Receptionist.name)
 }

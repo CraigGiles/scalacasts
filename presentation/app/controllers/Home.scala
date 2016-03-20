@@ -3,16 +3,17 @@ package controllers
 import javax.inject._
 
 import akka.actor.ActorSystem
-import com.gilesc.scalacasts.Receptionist
 import com.gilesc.scalacasts.bootstrap.{AkkaTimeoutSettings, ScalacastActors}
+import com.gilesc.scalacasts.Receptionist
+import com.gilesc.scalacasts.screencast.ScreencastContext
 import com.typesafe.config.ConfigFactory
 import models.ScreencastResource
-import play.api.Logger
-import play.api.Play.current
-import play.api.data.Forms._
 import play.api.data._
+import play.api.data.Forms._
 import play.api.i18n.Messages.Implicits._
+import play.api.Logger
 import play.api.mvc._
+import play.api.Play.current
 
 @Singleton
 class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
@@ -51,11 +52,12 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
         val filename = video.filename
         val contentType = video.contentType.getOrElse("N/A")
         val path = s"${config.getString("scalacasts.videos.folder")}/tmp-$filename"
+        val cxt = ScreencastContext(path, contentType, screencast.title, screencast.description, screencast.tags)
 
         video.ref.moveTo(new File(path), replace = true)
 
         val result = scalacastReceptionist ?
-          Receptionist.AddNewScreencast(path, contentType, screencast.title, screencast.description, screencast.tags)
+          Receptionist.AddNewScreencast(cxt)
 
         result.mapTo[Receptionist.Successful].map { message =>
           Logger.info("LOGGER: SUCCESSFUL " + message)
