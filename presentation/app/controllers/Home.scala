@@ -16,7 +16,8 @@ import play.api.mvc._
 import play.api.Play.current
 
 @Singleton
-class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
+class Home @Inject() (val system: ActorSystem) extends Controller
+  with AkkaTimeoutSettings with ScalacastActors {
 
   import akka.pattern.ask
   import system.dispatcher
@@ -41,6 +42,7 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
 
   def upload = Action(parse.multipartFormData) { implicit request =>
     import java.io.File
+
     val config = ConfigFactory.load()
 
     screencastResource.bindFromRequest.fold(
@@ -52,12 +54,16 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
         val filename = video.filename
         val contentType = video.contentType.getOrElse("N/A")
         val path = s"${config.getString("scalacasts.videos.folder")}/tmp-$filename"
-        val cxt = ScreencastContext(path, contentType, screencast.title, screencast.description, screencast.tags)
+        val cxt = ScreencastContext(
+          path,
+          contentType,
+          screencast.title,
+          screencast.description,
+          screencast.tags)
 
         video.ref.moveTo(new File(path), replace = true)
 
-        val result = scalacastReceptionist ?
-          Receptionist.AddNewScreencast(cxt)
+        val result = scalacastReceptionist ? Receptionist.AddNewScreencast(cxt)
 
         result.mapTo[Receptionist.Successful].map { message =>
           Logger.info("LOGGER: SUCCESSFUL " + message)
