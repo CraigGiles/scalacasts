@@ -1,9 +1,13 @@
-package com.gilesc.scalacasts
+package com.gilesc.scalacasts.screencast
 
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.service.ScreencastContext
 import java.time.LocalTime
 
 import com.gilesc.commons.Timestamps
+import com.gilesc.scalacasts.ContentType
+import com.gilesc.scalacasts.Title
+import com.gilesc.scalacasts.Description
+import com.gilesc.scalacasts.Tag
 
 object Screencast {
   def apply(cxt: ScreencastContext): Screencast = {

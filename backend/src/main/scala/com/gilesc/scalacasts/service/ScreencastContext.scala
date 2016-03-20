@@ -1,4 +1,4 @@
-package com.gilesc.scalacasts.screencast
+package com.gilesc.scalacasts.service
 
 import com.gilesc.scalacasts.ContentType
 import com.gilesc.scalacasts.Title

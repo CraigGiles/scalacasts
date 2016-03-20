@@ -4,8 +4,8 @@ import javax.inject._
 
 import akka.actor.ActorSystem
 import com.gilesc.scalacasts.bootstrap.{AkkaTimeoutSettings, ScalacastActors}
-import com.gilesc.scalacasts.Receptionist
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.service.Receptionist
+import com.gilesc.scalacasts.service.ScreencastContext
 import com.typesafe.config.ConfigFactory
 import models.ScreencastResource
 import play.api.data._
@@ -17,7 +17,7 @@ import play.api.Play.current
 
 @Singleton
 class Home @Inject() (val system: ActorSystem) extends Controller
-  with AkkaTimeoutSettings with ScalacastActors {
+    with AkkaTimeoutSettings with ScalacastActors {
 
   import akka.pattern.ask
   import system.dispatcher

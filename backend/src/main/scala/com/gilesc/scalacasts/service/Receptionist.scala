@@ -1,10 +1,12 @@
-package com.gilesc.scalacasts
+package com.gilesc.scalacasts.service
 
 import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.service.ScreencastContext
+import com.gilesc.scalacasts.screencast.Screencast
+import com.gilesc.scalacasts._
 
 object Receptionist {
   val name: String = "scalacasts-receptionist"
