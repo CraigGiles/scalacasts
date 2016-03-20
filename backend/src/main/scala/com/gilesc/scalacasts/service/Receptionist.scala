@@ -4,9 +4,11 @@ import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
-import com.gilesc.scalacasts.service.ScreencastContext
 import com.gilesc.scalacasts.screencast.Screencast
-import com.gilesc.scalacasts._
+import com.gilesc.scalacasts.Tag
+import com.gilesc.scalacasts.Title
+import com.gilesc.scalacasts.Description
+import com.gilesc.scalacasts.ContentType
 
 object Receptionist {
   val name: String = "scalacasts-receptionist"
@@ -44,15 +46,15 @@ class Receptionist extends BaseActor with AkkaTimeoutSettings {
   }
 
   def findByTags(tags: Set[Tag]): Unit = {
-    var results = Seq.empty[Screencast]
+    var results = Set.empty[Screencast]
 
     screencasts.foreach { screencast =>
       tags.foreach { tag =>
-        if (screencast.tags.contains(tag) && !results.contains(screencast))
-          results = results :+ screencast
+        if (screencast.tags.contains(tag))
+          results = results + screencast
       }
     }
 
-    sender() ! ScreencastResults(results)
+    sender() ! ScreencastResults(results.toSeq)
   }
 }

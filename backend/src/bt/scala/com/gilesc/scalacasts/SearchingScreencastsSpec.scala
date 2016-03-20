@@ -9,7 +9,8 @@ import scala.concurrent.Await
 import scala.util.Success
 
 import com.gilesc.commons.testing.TestCase
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.service.ScreencastContext
+import com.gilesc.scalacasts.service.Receptionist
 
 class SearchingScreencastsSpec extends TestCase {
   import scala.concurrent.ExecutionContext.Implicits.global
