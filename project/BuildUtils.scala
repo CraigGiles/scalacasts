@@ -1,8 +1,5 @@
 import sbt._
 import sbt.Keys._
-import com.gilesc._
-
-import com.gilesc.ScalaFormatter
 
 object BuildUtils {
   lazy val BehaviorTest = config("bt") extend(Test)
