@@ -28,11 +28,11 @@ class AddingScreencastsSpec extends TestCase {
         val resultsFut = scalacasts.findByTitle(title)
 
         whenReady(resultsFut) { results =>
-          results.screencasts.size should be(1)
-          results.screencasts.head.title should be(title)
-          results.screencasts.head.description should be(description)
-          results.screencasts.head.tags should be(tags)
-          results.screencasts.head.filePath should be(path)
+          results.size should be(1)
+          results.head.title should be(title)
+          results.head.description should be(description)
+          results.head.tags should be(tags)
+          results.head.filePath should be(path)
         }
       }
     }

@@ -13,25 +13,25 @@ object Scalacasts {
 class Scalacasts() {
   import Scalacasts._
 
-  var screencasts = Seq.empty[Screencast]
+  var screencasts = Set.empty[Screencast]
 
   def add(cxt: ScreencastContext): Future[Int] = Future {
-    screencasts = screencasts :+ Screencast(cxt)
+    screencasts = screencasts + Screencast(cxt)
 
     1
   }
 
-  def findByTitle(title: Title): Future[ScreencastResults] = Future {
-    ScreencastResults(screencasts.filter(_.title == title))
+  def findByTitle(title: Title): Future[List[Screencast]] = Future {
+    screencasts.filter(_.title == title).toList
   }
 
-  def findByTags(tags: Set[Tag]): Future[ScreencastResults] = Future {
+  def findByTags(tags: Set[Tag]): Future[List[Screencast]] = Future {
     val results = for {
       screencast <- screencasts
       tag <- tags
       if (screencast.tags.contains(tag))
     } yield screencast
 
-    ScreencastResults(results.toSet.toSeq)
+    results.toList
   }
 }

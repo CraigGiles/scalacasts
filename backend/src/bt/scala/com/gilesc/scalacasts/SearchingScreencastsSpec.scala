@@ -43,8 +43,8 @@ class SearchingScreencastsSpec extends TestCase {
       val future = scalacasts.findByTags(Set(alltag))
 
       whenReady(future) { results =>
-        results.screencasts.size should be(3)
-        results.screencasts.foreach { item =>
+        results.size should be(3)
+        results.foreach { item =>
           item.tags.contains(alltag) should be(true)
         }
       }
@@ -63,8 +63,8 @@ class SearchingScreencastsSpec extends TestCase {
 
       val future = scalacasts.findByTags(Set(doubletag))
       whenReady(future) { results =>
-        results.screencasts.size should be(2)
-        results.screencasts.foreach { item =>
+        results.size should be(2)
+        results.foreach { item =>
           item.tags.contains(doubletag) should be(true)
           item.tags.contains(threetag) should be(false)
         }
@@ -84,7 +84,7 @@ class SearchingScreencastsSpec extends TestCase {
 
       val future = scalacasts.findByTags(Set(nonetag))
       whenReady(future) { results =>
-        results.screencasts.isEmpty should be(true)
+        results.isEmpty should be(true)
       }
     }
   }
