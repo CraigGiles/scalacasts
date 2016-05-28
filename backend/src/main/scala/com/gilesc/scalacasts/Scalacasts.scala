@@ -7,38 +7,29 @@ import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
 import java.time.LocalTime
 import com.gilesc.scalacasts.screencast.ScreencastContext
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 object Scalacasts {
-  val name = "scalacasts-receptionist"
-
-  case class AddNewScreencast(cxt: ScreencastContext)
-  case class FindByTitle(title: Title)
-  case class FindByTags(tags: Set[Tag])
-
   case class ScreencastResults(screencasts: Seq[Screencast])
-
-  def props(): Props = Props(new Scalacasts)
 }
 
-class Scalacasts extends BaseActor with AkkaTimeoutSettings {
+class Scalacasts() {
   import Scalacasts._
 
   var screencasts = Seq.empty[Screencast]
 
-  def receive: Receive = {
-    case AddNewScreencast(cxt: ScreencastContext) => addScreencast(cxt)
-    case FindByTitle(title) => findByTitle(title)
-    case FindByTags(tags) => findByTags(tags)
-  }
-
-  def addScreencast(cxt: ScreencastContext): Unit = {
+  def add(cxt: ScreencastContext): Future[Int] = Future {
     screencasts = screencasts :+ Screencast(cxt)
+
+    1
   }
 
-  def findByTitle(title: Title): Unit = {
-    sender() ! ScreencastResults(screencasts.filter(_.title == title))
+  def findByTitle(title: Title): Future[ScreencastResults] = Future {
+    ScreencastResults(screencasts.filter(_.title == title))
   }
 
-  def findByTags(tags: Set[Tag]): Unit = {
+  def findByTags(tags: Set[Tag]): Future[ScreencastResults] = Future {
     var results = Seq.empty[Screencast]
 
     screencasts.foreach { screencast =>
@@ -48,6 +39,6 @@ class Scalacasts extends BaseActor with AkkaTimeoutSettings {
       }
     }
 
-    sender() ! ScreencastResults(results)
+    ScreencastResults(results)
   }
 }

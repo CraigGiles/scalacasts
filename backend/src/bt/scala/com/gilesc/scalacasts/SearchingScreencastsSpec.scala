@@ -10,11 +10,9 @@ import scala.util.Success
 
 import com.gilesc.commons.testing.TestCase
 import com.gilesc.scalacasts.screencast.ScreencastContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SearchingScreencastsSpec extends TestCase {
-  import scala.concurrent.ExecutionContext.Implicits.global
-  implicit val timeout = Timeout(10 seconds)
-
   val path = "./path/to/myvideo001.mov"
   val contentType = ContentType("mov")
   val title = Title("My Test Video")
@@ -33,49 +31,61 @@ class SearchingScreencastsSpec extends TestCase {
 
   "finding screencasts by tag" should {
     "returns the proper amount of videos when tags are requested" in {
-      val scalacasts = TestActorRef(new Scalacasts)
+      val scalacasts = new Scalacasts()
 
-      scalacasts ! Scalacasts.AddNewScreencast(cxt01)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt02)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt03)
+      val futuresToAwait = for {
+        f1 <- scalacasts.add(cxt01)
+        f2 <- scalacasts.add(cxt02)
+        f3 <- scalacasts.add(cxt03)
+      } yield (f1, f2, f3)
 
-      val future = scalacasts ? Scalacasts.FindByTags(Set(alltag))
-      val Success(results: Scalacasts.ScreencastResults) = future.value.get
+      Await.result(futuresToAwait, 10.seconds)
+      val future = scalacasts.findByTags(Set(alltag))
 
-      results.screencasts.size should be(3)
-      results.screencasts.foreach { item =>
-        item.tags.contains(alltag) should be(true)
+      whenReady(future) { results =>
+        results.screencasts.size should be(3)
+        results.screencasts.foreach { item =>
+          item.tags.contains(alltag) should be(true)
+        }
       }
     }
 
     "return only two videos when double tag is requested" in {
-      val scalacasts = TestActorRef(new Scalacasts)
+      val scalacasts = new Scalacasts()
 
-      scalacasts ! Scalacasts.AddNewScreencast(cxt01)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt02)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt03)
+      val futuresToAwait = for {
+        f1 <- scalacasts.add(cxt01)
+        f2 <- scalacasts.add(cxt02)
+        f3 <- scalacasts.add(cxt03)
+      } yield (f1, f2, f3)
 
-      val future = scalacasts ? Scalacasts.FindByTags(Set(doubletag))
-      val Success(results: Scalacasts.ScreencastResults) = future.value.get
+      Await.result(futuresToAwait, 10.seconds)
 
-      results.screencasts.size should be(2)
-      results.screencasts.foreach { item =>
-        item.tags.contains(doubletag) should be(true)
-        item.tags.contains(threetag) should be(false)
+      val future = scalacasts.findByTags(Set(doubletag))
+      whenReady(future) { results =>
+        results.screencasts.size should be(2)
+        results.screencasts.foreach { item =>
+          item.tags.contains(doubletag) should be(true)
+          item.tags.contains(threetag) should be(false)
+        }
       }
     }
 
     "return an empty-set result if no tags are found" in {
-      val scalacasts = TestActorRef(new Scalacasts)
+      val scalacasts = new Scalacasts()
 
-      scalacasts ! Scalacasts.AddNewScreencast(cxt01)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt02)
-      scalacasts ! Scalacasts.AddNewScreencast(cxt03)
+      val futuresToAwait = for {
+        f1 <- scalacasts.add(cxt01)
+        f2 <- scalacasts.add(cxt02)
+        f3 <- scalacasts.add(cxt03)
+      } yield (f1, f2, f3)
 
-      val future = scalacasts ? Scalacasts.FindByTags(Set(nonetag))
-      val Success(results: Scalacasts.ScreencastResults) = future.value.get
+      Await.result(futuresToAwait, 10.seconds)
 
-      results.screencasts.isEmpty should be(true)
+      val future = scalacasts.findByTags(Set(nonetag))
+      whenReady(future) { results =>
+        results.screencasts.isEmpty should be(true)
+      }
     }
   }
 }

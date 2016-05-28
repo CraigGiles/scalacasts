@@ -14,12 +14,7 @@ import play.api.data._
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
 
-@Singleton
-class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeoutSettings with ScalacastActors {
-
-  import akka.pattern.ask
-  import system.dispatcher
-
+class Home extends Controller {
   val screencastResource = Form(
     mapping(
       "title" -> text,
@@ -39,32 +34,34 @@ class Home @Inject() (val system: ActorSystem) extends Controller with AkkaTimeo
   }
 
   def upload = Action(parse.multipartFormData) { implicit request =>
-    import java.io.File
-    val config = ConfigFactory.load()
+    Redirect(routes.Home.index()).flashing("success" -> "Screencast Added")
 
-    screencastResource.bindFromRequest.fold(
-      formWithErrors => {
-        BadRequest(views.html.home.contact(formWithErrors))
-      },
+    // import java.io.File
+    // val config = ConfigFactory.load()
 
-      screencast => request.body.file("screencast").map { video =>
-        val filename = video.filename
-        val contentType = video.contentType.getOrElse("N/A")
-        val path = s"${config.getString("scalacasts.videos.folder")}/tmp-$filename"
+    // screencastResource.bindFromRequest.fold(
+    //   formWithErrors => {
+    //     BadRequest(views.html.home.contact(formWithErrors))
+    //   },
 
-        video.ref.moveTo(new File(path), replace = true)
+    //   screencast => request.body.file("screencast").map { video =>
+    //     val filename = video.filename
+    //     val contentType = video.contentType.getOrElse("N/A")
+    //     val path = s"${config.getString("scalacasts.videos.folder")}/tmp-$filename"
 
-        val result = scalacastReceptionist ?
-          Receptionist.AddNewScreencast(path, contentType, screencast.title, screencast.description, screencast.tags)
+    //     video.ref.moveTo(new File(path), replace = true)
 
-        result.mapTo[Receptionist.Successful].map { message =>
-          Logger.info("LOGGER: SUCCESSFUL " + message)
-        }
+    //     val result = scalacastReceptionist ?
+    //       Receptionist.AddNewScreencast(path, contentType, screencast.title, screencast.description, screencast.tags)
 
-        Redirect(routes.Home.index()).flashing("success" -> "Screencast Added")
-      }.getOrElse {
-        Redirect(routes.Home.index()).flashing("error" -> "Missing file")
-      })
+    //     result.mapTo[Receptionist.Successful].map { message =>
+    //       Logger.info("LOGGER: SUCCESSFUL " + message)
+    //     }
+
+    //     Redirect(routes.Home.index()).flashing("success" -> "Screencast Added")
+    //   }.getOrElse {
+    //     Redirect(routes.Home.index()).flashing("error" -> "Missing file")
+    //   })
   }
 
 }

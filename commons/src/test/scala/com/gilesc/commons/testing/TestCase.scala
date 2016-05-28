@@ -5,12 +5,12 @@ import akka.actor.Actor
 import akka.testkit.{TestKit, TestActorRef}
 import org.scalatest._
 import org.scalatest.Matchers._
+import org.scalatest.concurrent._
 
 import Matchers._
 
-abstract class TestCase extends TestKit(ActorSystem("testsystem"))
-    with WordSpecLike with Matchers with GivenWhenThen {
-
-  //TODO: change "testsystem" to config
-
+abstract class TestCase extends WordSpecLike
+    with Matchers
+    with GivenWhenThen
+    with ScalaFutures {
 }

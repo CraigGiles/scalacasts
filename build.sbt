@@ -13,19 +13,14 @@ lazy val root = BuildUtils.rootProject.
 
 lazy val commons = BuildUtils.createSubProject("commons").
   settings(
-    AkkaDeps.settings,
-
     libraryDependencies ++= Dependencies.backend
   )
 
 lazy val backend = BuildUtils.createSubProject("backend").
   dependsOn(commons % "compile->compile;test->test").
   settings(
-    AkkaDeps.settings,
-
     // Scalacasts specific settings
-    libraryDependencies ++= Dependencies.backend
-  )
+    libraryDependencies ++= Dependencies.backend)
 
 lazy val presentation = BuildUtils.createSubProject("presentation").
   enablePlugins(play.PlayScala).
@@ -34,8 +29,7 @@ lazy val presentation = BuildUtils.createSubProject("presentation").
   dependsOn(backend % "compile->compile").
   settings(
     // other settings
-    libraryDependencies ++= Dependencies.frontend
-  )
+    libraryDependencies ++= Dependencies.frontend)
 
 javaOptions in Universal ++= Seq(
   // JVM memory tuning
@@ -43,5 +37,4 @@ javaOptions in Universal ++= Seq(
   "-J-Xms512m",
 
   // You may also want to include this setting if you use play evolutions
-  "-DapplyEvolutions.default=true"
-)
+  "-DapplyEvolutions.default=true")
