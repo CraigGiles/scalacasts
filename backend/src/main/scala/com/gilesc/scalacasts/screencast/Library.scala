@@ -1,5 +1,6 @@
-package com.gilesc.scalacasts
+package com.gilesc.scalacasts.screencast
 
+import com.gilesc.scalacasts._
 import scala.concurrent.Future
 
 trait LibraryRepository {

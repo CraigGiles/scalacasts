@@ -1,18 +1,13 @@
-package com.gilesc.scalacasts
+package com.gilesc.scalacasts.screencast
 
+import com.gilesc.scalacasts._
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import java.time.LocalTime
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object Scalacasts {
-  case class ScreencastResults(screencasts: Seq[Screencast])
-}
-
 class Scalacasts() {
-  import Scalacasts._
-
   var screencasts = Set.empty[Screencast]
 
   def add(cxt: ScreencastContext): Future[Int] = Future {

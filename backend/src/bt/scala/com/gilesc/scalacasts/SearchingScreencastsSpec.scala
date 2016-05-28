@@ -9,6 +9,8 @@ import scala.concurrent.Await
 import scala.util.Success
 
 import com.gilesc.scalacasts.testing.TestCase
+import com.gilesc.scalacasts.screencast.Scalacasts
+import com.gilesc.scalacasts.screencast.Screencast
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import scala.concurrent.ExecutionContext.Implicits.global
 

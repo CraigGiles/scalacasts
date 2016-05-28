@@ -1,6 +1,6 @@
-package com.gilesc.scalacasts
+package com.gilesc.scalacasts.screencast
 
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts._
 import java.time.LocalTime
 
 object Screencast {
