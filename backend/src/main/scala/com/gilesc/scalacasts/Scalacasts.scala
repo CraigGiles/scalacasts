@@ -4,11 +4,11 @@ import akka.actor.{ActorRef, Props}
 import akka.pattern.{ask, pipe}
 import com.gilesc.commons.akka.BaseActor
 import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
-import java.time.LocalTime
 import com.gilesc.scalacasts.screencast.ScreencastContext
+import java.time.LocalTime
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Scalacasts {
   case class ScreencastResults(screencasts: Seq[Screencast])
@@ -30,15 +30,12 @@ class Scalacasts() {
   }
 
   def findByTags(tags: Set[Tag]): Future[ScreencastResults] = Future {
-    var results = Seq.empty[Screencast]
+    val results = for {
+      screencast <- screencasts
+      tag <- tags
+      if (screencast.tags.contains(tag))
+    } yield screencast
 
-    screencasts.foreach { screencast =>
-      tags.foreach { tag =>
-        if (screencast.tags.contains(tag) && !results.contains(screencast))
-          results = results :+ screencast
-      }
-    }
-
-    ScreencastResults(results)
+    ScreencastResults(results.toSet.toSeq)
   }
 }
