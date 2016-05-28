@@ -1,9 +1,5 @@
 package com.gilesc.scalacasts
 
-import akka.actor.{ActorRef, Props}
-import akka.pattern.{ask, pipe}
-import com.gilesc.commons.akka.BaseActor
-import com.gilesc.scalacasts.bootstrap.AkkaTimeoutSettings
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import java.time.LocalTime
 

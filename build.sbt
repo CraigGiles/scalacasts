@@ -9,15 +9,9 @@ lazy val root = BuildUtils.rootProject.
     aggregate in update := false,
     Revolver.settings,
     resolvers += Resolver.jcenterRepo).
-  aggregate(commons, backend, presentation)
-
-lazy val commons = BuildUtils.createSubProject("commons").
-  settings(
-    libraryDependencies ++= Dependencies.backend
-  )
+  aggregate(backend, presentation)
 
 lazy val backend = BuildUtils.createSubProject("backend").
-  dependsOn(commons % "compile->compile;test->test").
   settings(
     // Scalacasts specific settings
     libraryDependencies ++= Dependencies.backend)

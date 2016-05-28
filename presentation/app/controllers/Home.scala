@@ -2,9 +2,6 @@ package controllers
 
 import javax.inject._
 
-import akka.actor.ActorSystem
-import com.gilesc.scalacasts.Receptionist
-import com.gilesc.scalacasts.bootstrap.{AkkaTimeoutSettings, ScalacastActors}
 import com.typesafe.config.ConfigFactory
 import models.ScreencastResource
 import play.api.Logger
