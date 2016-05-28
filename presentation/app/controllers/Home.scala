@@ -70,9 +70,6 @@ class Home extends Controller {
 
         val result = scalacasts.add(cxt)
 
-        // val result = scalacastReceptionist ?
-        //   Receptionist.AddNewScreencast(path, contentType, screencast.title, screencast.description, screencast.tags)
-
         result.mapTo[Int].map { message =>
           Logger.info("LOGGER: SUCCESSFUL " + message)
         }
