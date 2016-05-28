@@ -3,8 +3,6 @@ package com.gilesc.scalacasts
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import java.time.LocalTime
 
-import com.gilesc.commons.Timestamps
-
 object Screencast {
   def apply(cxt: ScreencastContext): Screencast = {
     val timestamp = LocalTime.now()

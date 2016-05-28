@@ -1,4 +1,4 @@
-package com.gilesc.commons
+package com.gilesc.scalacasts
 
 import java.time.LocalTime
 

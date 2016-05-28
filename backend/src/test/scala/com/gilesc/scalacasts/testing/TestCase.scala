@@ -1,4 +1,4 @@
-package com.gilesc.commons.testing
+package com.gilesc.scalacasts.testing
 
 import akka.actor.ActorSystem
 import akka.actor.Actor

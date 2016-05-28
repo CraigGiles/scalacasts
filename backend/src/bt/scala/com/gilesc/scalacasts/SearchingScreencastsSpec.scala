@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 import scala.concurrent.Await
 import scala.util.Success
 
-import com.gilesc.commons.testing.TestCase
+import com.gilesc.scalacasts.testing.TestCase
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
