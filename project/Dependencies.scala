@@ -8,10 +8,6 @@ object Dependencies {
 
   val scalaTest = "org.scalatest" %% "scalatest" % scalatestVersion
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
-  val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
-  val akkaRemote = "com.typesafe.akka" %% "akka-remote" % akkaVersion
-  val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
-  val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
   // Projects
   val base = Seq(
@@ -20,10 +16,6 @@ object Dependencies {
   )
 
   val backend = base ++ Seq(
-    akkaActor,
-    akkaRemote,
-    akkaSlf4j,
-    akkaTestkit % "test"
   )
 
   val frontend = base ++ Seq(
