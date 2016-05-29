@@ -12,6 +12,7 @@ import com.gilesc.scalacasts.screencast.Scalacasts
 import com.gilesc.scalacasts.screencast.Screencast
 import com.gilesc.scalacasts.screencast.ScreencastContext
 import com.gilesc.scalacasts.testing.TestCase
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SearchingScreencastsSpec extends TestCase {
