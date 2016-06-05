@@ -8,6 +8,6 @@ trait DatabaseProfile {
   val profile: JdbcProfile
   import profile.api._
 
-  val db = Database.forConfig("database")
+  val db = Database.forConfig("scalacasts.database")
   def execute[T](action: DBIO[T]): Future[T] = db.run(action)
 }

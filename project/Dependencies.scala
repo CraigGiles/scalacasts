@@ -8,8 +8,8 @@ object Dependencies {
   val bcryptVersion = "0.3m"
   val quillVersion = "0.6.1"
   val slickVersion = "3.1.1"
-
   val mysqlConnectorVersion = "5.1.36"
+
   val scalaTest = "org.scalatest" %% "scalatest" % scalatestVersion
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val bcrypt = "org.mindrot" % "jbcrypt" % bcryptVersion
@@ -26,10 +26,14 @@ object Dependencies {
   )
 
   val database = Seq(
-    "com.h2database" % "h2" % "1.4.191",
     mysqlConnector,
     slick,
-    slickCodegen
+    slickCodegen,
+    "com.h2database" % "h2" % "1.4.191",
+    "com.zaxxer" % "HikariCP" % "2.4.1",
+    "com.typesafe.slick" %% "slick" % "3.1.1",
+    "com.typesafe.slick" %% "slick-hikaricp" % "3.1.1",
+    "com.github.tototoshi" %% "slick-joda-mapper" % "2.1.0"
   )
 
   val backend = database ++ base ++ Seq(
