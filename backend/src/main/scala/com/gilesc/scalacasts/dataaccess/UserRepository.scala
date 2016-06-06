@@ -3,9 +3,10 @@ package com.gilesc.scalacasts.dataaccess
 import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.registration.RegistrationContext
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
+
+import scala.concurrent.Future
 
 /**
   * CREATE TABLE IF NOT EXISTS `users` (
@@ -42,8 +43,15 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extend
 
   private[this] lazy val UsersTable = TableQuery[UserTable]
 
+  def insert(name: String, email: String, passwordHash: String): Future[User] = {
+    val insertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
+    val action = insertQuery += User(0, name, email, passwordHash)
+
+    execute(action)
+  }
+
   def findByEmail(email: String) =
     execute(UsersTable.filter(_.email === email).take(1).result) map (_.headOption)
-  def insert(cxt: RegistrationContext) = UsersTable += User(0L, cxt.username, cxt.email, cxt.password, )
+
 }
 
