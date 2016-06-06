@@ -53,5 +53,6 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extend
   def findByEmail(email: String) =
     execute(UsersTable.filter(_.email === email).take(1).result) map (_.headOption)
 
+  private[this] def hash(password: String): String = "hashed " + password
 }
 
