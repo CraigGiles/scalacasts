@@ -1,19 +1,11 @@
 package com.gilesc.scalacasts
 
-import akka.pattern.ask
-import akka.testkit.TestActorRef
-import akka.util.Timeout
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.util.Success
-
-import com.gilesc.scalacasts.screencast.Scalacasts
-import com.gilesc.scalacasts.screencast.Screencast
-import com.gilesc.scalacasts.screencast.ScreencastContext
+import com.gilesc.scalacasts.screencast.{Scalacasts, ScreencastContext}
 import com.gilesc.scalacasts.testing.TestCase
 
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 class SearchingScreencastsSpec extends TestCase {
   val path = "./path/to/myvideo001.mov"

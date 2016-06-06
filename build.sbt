@@ -11,10 +11,16 @@ lazy val root = BuildUtils.rootProject.
     resolvers += Resolver.jcenterRepo).
   aggregate(backend, presentation)
 
+lazy val flyway = (project in file("flyway"))
+  .enablePlugins(FlywayPlugin)
+  .settings(
+    libraryDependencies ++= Dependencies.database)
+
 lazy val backend = BuildUtils.createSubProject("backend").
   settings(
     // Scalacasts specific settings
-    libraryDependencies ++= Dependencies.backend)
+    libraryDependencies ++= Dependencies.backend,
+    libraryDependencies ++= Dependencies.database)
 
 lazy val presentation = BuildUtils.createSubProject("presentation").
   enablePlugins(play.PlayScala).
