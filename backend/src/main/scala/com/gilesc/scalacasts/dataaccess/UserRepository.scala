@@ -3,6 +3,7 @@ package com.gilesc.scalacasts.dataaccess
 import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
+import com.gilesc.security.password.{Bcrypt, PasswordHasher, PasswordHashing}
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
 
@@ -43,16 +44,16 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extend
 
   private[this] lazy val UsersTable = TableQuery[UserTable]
 
-  def insert(name: String, email: String, passwordHash: String): Future[User] = {
+  def insert(name: String, email: String, password: String): Future[User] = {
     val insertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
-    val action = insertQuery += User(0, name, email, passwordHash)
+    val hasher = PasswordHasher(Bcrypt)
+    val hashed = hasher.hash(password)
+    val action = insertQuery += User(0, name, email, hashed.password)
 
     execute(action)
   }
 
   def findByEmail(email: String) =
     execute(UsersTable.filter(_.email === email).take(1).result) map (_.headOption)
-
-  private[this] def hash(password: String): String = "hashed " + password
 }
 
