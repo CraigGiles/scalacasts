@@ -3,7 +3,7 @@ package com.gilesc.scalacasts.dataaccess
 import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
-import com.gilesc.security.password.{Bcrypt, PasswordHasher, PasswordHashing}
+import com.gilesc.security.password.PasswordHashing
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
 
@@ -24,7 +24,7 @@ import scala.concurrent.Future
   *
   * ) ENGINE=InnoDB;
   */
-class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extends DatabaseProfile {
+class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extends DatabaseProfile with PasswordHashing {
   import profile.api._
 
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,8 +46,7 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extend
 
   def insert(name: String, email: String, password: String): Future[User] = {
     val insertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
-    val hasher = PasswordHasher(Bcrypt)
-    val hashed = hasher.hash(password)
+    val hashed = hash(password)
     val action = insertQuery += User(0, name, email, hashed.password)
 
     execute(action)
