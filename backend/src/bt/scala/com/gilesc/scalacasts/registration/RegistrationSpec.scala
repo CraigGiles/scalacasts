@@ -34,7 +34,6 @@ class RegistrationSpec extends TestCase {
   }
 
   "The registration system" should {
-
   }
 }
 

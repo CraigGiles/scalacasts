@@ -1,8 +1,10 @@
-package com.gilesc.scalacasts.dataaccess
+package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
+import com.gilesc.scalacasts.dataaccess.DatabaseProfile
+import com.gilesc.scalacasts.model.Roles
 import com.gilesc.security.password.PasswordHashing
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
@@ -45,9 +47,22 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extend
   private[this] lazy val UsersTable = TableQuery[UserTable]
 
   def insert(name: String, email: String, password: String): Future[User] = {
-    val insertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
+    val usersInsertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
     val hashed = hash(password)
-    val action = insertQuery += User(0, name, email, hashed.password)
+    val action = usersInsertQuery += User(0, name, email, hashed.password)
+
+    val ac = (for {
+      // Insert the user into the users table
+      usr <- usersInsertQuery += User(0, name, email, hashed.password)
+      _ <- sqlu"""INSERT INTO user_roles (user_id, role_id) VALUES (${usr.id}, ${Roles.Customer.id}"""
+    } yield usr).transactionally
+
+    //    val a = (for {
+    //      ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
+    //      _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
+    //    } yield ()).transactionally
+    //
+    //    val f: Future[Unit] = db.run(a)
 
     execute(action)
   }

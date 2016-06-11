@@ -1,13 +1,16 @@
 package com.gilesc.scalacasts.registration
 
-import com.gilesc.scalacasts.dataaccess.{MySqlDatabaseDriver, UserRepository}
-import slick.driver.JdbcProfile
+import com.gilesc.scalacasts.User
+import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
+import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 
 import scala.concurrent.Future
 
 case class UserId(underlying: Long) extends AnyVal
 
-class Mailer {}
+trait UserMailer {
+  def welcome(user: User): Boolean
+}
 
 case class RegistrationContext(username: String, email: String, password: String, passwordConfirmation: String) {
   assert(username.length >= 5, "Username should be greater than 5 characters")
@@ -18,13 +21,11 @@ case class RegistrationContext(username: String, email: String, password: String
 class Registration {
   val repo = new UserRepository(MySqlDatabaseDriver)
 
-  def register(mailer: Mailer)(cxt: RegistrationContext): Future[UserId] = {
-    // try to validate the registration information
-    // if validated:
-    //  save the user information
-
-    repo.insert(cxt.username, cxt.email, cxt.password)
-    Future.successful(UserId(1L))
+  def register(mailer: UserMailer)(cxt: RegistrationContext): Future[User] = {
+    for {
+      user <- repo.insert(cxt.username, cxt.email, cxt.password)
+      sent <- mailer.welcome(user)
+    } yield user
   }
 
 }
