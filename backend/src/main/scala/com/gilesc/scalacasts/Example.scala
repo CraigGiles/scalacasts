@@ -2,28 +2,30 @@ package com.gilesc.scalacasts
 
 import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
 import com.gilesc.scalacasts.dataaccess.repository.UserRepository
+import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.Random
 
-object Example extends App {
+object Example extends App with LazyLogging {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val repo = new UserRepository(MySqlDatabaseDriver)
-  val number = "05"
-  val username = s"craiggiles-$number"
-  val email = s"myemail-$number"
+  val number = Random.nextInt()
+  val username = s"cg-$number"
+  val email = s"em-$number"
   val password = "mypassword"
 
   val myresult = for {
     insertResult <- repo.insert(username, email, password)
   } yield insertResult
 
-  //  val hashed = PasswordHasher.hash(password)
-  //  println("Hashed password: " + hashed)
-  //  val verified = PasswordHasher.verify(password, hashed)
-  //  println("verified: " + verified)
+  myresult onComplete { r =>
+    logger.info("RESULT: {}", r)
+  }
 
-  //  println("FOUND: " + Await.result(myresult, 10 seconds))
-
+  Await.result(myresult, 10 seconds)
 }
 
