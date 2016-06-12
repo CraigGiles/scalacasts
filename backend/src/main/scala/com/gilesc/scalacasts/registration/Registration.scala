@@ -28,10 +28,10 @@ class Registration {
   val repo = new UserRepository(MySqlDatabaseDriver)
 
   def register(mailer: UserMailer)(cxt: RegistrationContext): Future[User] = {
-    repo.insert(cxt.username, cxt.email, cxt.password) flatMap { user =>
+    repo.insert(cxt.username, cxt.email, cxt.password) map { user =>
       mailer.welcome(user)
 
-      Future(user)
+      user
     }
   }
 

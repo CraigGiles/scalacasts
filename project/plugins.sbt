@@ -11,4 +11,6 @@ addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.3")
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.8.0")
 addSbtPlugin("org.flywaydb" % "flyway-sbt" % "4.0")
+addSbtPlugin("com.github.tototoshi" % "sbt-slick-codegen" % "1.2.0")
 
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.36"

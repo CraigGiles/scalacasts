@@ -23,6 +23,7 @@ object Dependencies {
 
   // Projects
   val base = Seq(
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
     scalaz,
 //    secureSocial,
     bcrypt,

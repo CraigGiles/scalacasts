@@ -4,10 +4,9 @@ import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.DatabaseProfile
-import com.gilesc.scalacasts.model.Roles
 import com.gilesc.security.password.PasswordHashing
+import com.typesafe.scalalogging.LazyLogging
 import slick.driver.JdbcProfile
-import slick.profile.SqlProfile.ColumnOption.SqlType
 
 import scala.concurrent.Future
 
@@ -26,48 +25,31 @@ import scala.concurrent.Future
   *
   * ) ENGINE=InnoDB;
   */
-class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile) extends DatabaseProfile with PasswordHashing {
+class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
+    extends DatabaseProfile
+    with PasswordHashing
+    with LazyLogging {
+
   import profile.api._
+  import com.gilesc.scalacasts.dataaccess.Tables._
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  class UserTable(tag: Tag) extends Table[User](tag, "users") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def username = column[String]("username")
-    def email = column[String]("email")
-    def password_hash = column[String]("password_hash")
-    def created_at = column[Timestamp]("created_at", SqlType("timestamp not null default CURRENT_TIMESTAMP"))
-    def updated_at = column[Timestamp]("updated_at", SqlType("timestamp not null default CURRENT_TIMESTAMP"))
-    def deleted_at = column[Option[Timestamp]]("deleted_at", SqlType("timestamp null default null"))
-
-    override def * =
-      (id, username, email, password_hash) <> (User.tupled, User.unapply)
-  }
-
-  private[this] lazy val UsersTable = TableQuery[UserTable]
-
   def insert(name: String, email: String, password: String): Future[User] = {
-    val usersInsertQuery = UsersTable returning UsersTable.map(_.id) into ((user, id) => user.copy(id = id))
+    logger.info("Inserting with name: {}, email: {}, password: {}", name, email, password)
+    val usersInsertQuery = Users returning Users.map(_.id) into ((user, id) => user.copy(id = id))
+    val ts = Timestamp.valueOf(java.time.OffsetDateTime.now().toLocalDateTime)
     val hashed = hash(password)
-    val action = usersInsertQuery += User(0, name, email, hashed.password)
+    val action = usersInsertQuery += UsersRow(0, name, email, hashed.password, ts, ts, None)
+    val CustomerRole = 1
 
-    val ac = (for {
-      // Insert the user into the users table
-      usr <- usersInsertQuery += User(0, name, email, hashed.password)
-      _ <- sqlu"""INSERT INTO user_roles (user_id, role_id) VALUES (${usr.id}, ${Roles.Customer.id}"""
-    } yield usr).transactionally
-
-    //    val a = (for {
-    //      ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
-    //      _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
-    //    } yield ()).transactionally
-    //
-    //    val f: Future[Unit] = db.run(a)
-
-    execute(action)
+    execute(action) map { row =>
+      execute(UserRoles += UserRolesRow(row.id, CustomerRole, ts))
+      User(row.id, row.username, row.email, row.passwordHash)
+    }
   }
 
   def findByEmail(email: String) =
-    execute(UsersTable.filter(_.email === email).take(1).result) map (_.headOption)
+    execute(Users.filter(_.email === email).take(1).result) map (_.headOption)
 }
 
