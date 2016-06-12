@@ -1,11 +1,13 @@
 package com.gilesc.scalacasts
 
-import com.gilesc.scalacasts.dataaccess.{MySqlDatabaseDriver, UserRepository}
+import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
+import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 
 object Example extends App {
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   val repo = new UserRepository(MySqlDatabaseDriver)
   val number = "05"
   val username = s"craiggiles-$number"

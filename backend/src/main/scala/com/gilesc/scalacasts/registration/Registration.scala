@@ -6,10 +6,16 @@ import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 
 import scala.concurrent.Future
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 case class UserId(underlying: Long) extends AnyVal
 
-trait UserMailer {
-  def welcome(user: User): Boolean
+abstract class Mailer {
+  def send(from: String, to: String, subject: String, body: String): Boolean = true
+}
+
+class UserMailer extends Mailer {
+  def welcome(user: User): Boolean = send("from", "to", "subject", "body")
 }
 
 case class RegistrationContext(username: String, email: String, password: String, passwordConfirmation: String) {
@@ -22,10 +28,11 @@ class Registration {
   val repo = new UserRepository(MySqlDatabaseDriver)
 
   def register(mailer: UserMailer)(cxt: RegistrationContext): Future[User] = {
-    for {
-      user <- repo.insert(cxt.username, cxt.email, cxt.password)
-      sent <- mailer.welcome(user)
-    } yield user
+    repo.insert(cxt.username, cxt.email, cxt.password) flatMap { user =>
+      mailer.welcome(user)
+
+      Future(user)
+    }
   }
 
 }
