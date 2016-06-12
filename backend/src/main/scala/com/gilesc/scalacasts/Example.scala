@@ -1,20 +1,29 @@
 package com.gilesc.scalacasts
 
-import com.gilesc.scalacasts.dataaccess.{MySqlDatabaseDriver, UserRepository}
+import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
+import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
 object Example extends App {
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   val repo = new UserRepository(MySqlDatabaseDriver)
-  val username = "craiggiles04"
-  val email = "myemail04"
+  val number = "05"
+  val username = s"craiggiles-$number"
+  val email = s"myemail-$number"
+  val password = "mypassword"
+
   val myresult = for {
-    insertResult <- repo.insert(username, email, "mypasswordhash")
+    insertResult <- repo.insert(username, email, password)
   } yield insertResult
 
-  println("FOUND: " + Await.result(myresult, 10 seconds))
+  //  val hashed = PasswordHasher.hash(password)
+  //  println("Hashed password: " + hashed)
+  //  val verified = PasswordHasher.verify(password, hashed)
+  //  println("verified: " + verified)
+
+  //  println("FOUND: " + Await.result(myresult, 10 seconds))
 
 }
+
