@@ -1,16 +1,17 @@
 package com.gilesc.security.password
 
+import com.gilesc.scalacasts.model.RawPassword
 import org.mindrot.jbcrypt.BCrypt
 
 trait PasswordHashing {
-  def hash(password: String): HashedPassword = {
-    val logRounds = 20000
-    val salt = BCrypt.gensalt()
-    val hashedPassword = BCrypt.hashpw(password, salt)
+  type Salt = String
 
-    HashedPassword(hashedPassword, Option(salt))
+  val hash: Salt => RawPassword => HashedPassword = { salt => raw =>
+    HashedPassword(BCrypt.hashpw(raw.value, salt), salt)
   }
 
-  def verify(password: String, hashed: HashedPassword): Boolean =
-    BCrypt.checkpw(password, hashed.password)
+  val verify: HashedPassword => Boolean = { hashed =>
+    BCrypt.checkpw(hashed.password, hashed.salt)
+  }
 }
+

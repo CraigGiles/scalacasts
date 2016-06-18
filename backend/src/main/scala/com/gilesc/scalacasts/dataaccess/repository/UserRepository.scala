@@ -3,9 +3,11 @@ package com.gilesc.scalacasts.dataaccess.repository
 import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.dataaccess.DatabaseProfile
-import com.gilesc.security.password.PasswordHashing
+import com.gilesc.scalacasts.dataaccess.{DatabaseProfile, Tables}
+import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.security.password.{HashedPassword, PasswordHashing}
 import com.typesafe.scalalogging.LazyLogging
+import org.mindrot.jbcrypt.BCrypt
 import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
@@ -16,6 +18,7 @@ import scala.concurrent.Future
   * `username` varchar(30) NOT NULL,
   * `email` varchar(120) NOT NULL,
   * `password_hash` char(70) NOT NULL,
+  * `password_salt` varchar(255) NOT NULL,
   * `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   * `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   * `deleted_at` timestamp NULL DEFAULT NULL,
@@ -35,21 +38,40 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  def insert(name: String, email: String, password: String): Future[User] = {
-    logger.info("Inserting with name: {}, email: {}, password: {}", name, email, password)
+  def insert(name: Username, email: Email, password: RawPassword): Future[User] = {
+    logger.info("Inserting with name: {}, email: {}, password: {}", name.value, email.value, password.value)
+    val hashWithSalt = hash(BCrypt.gensalt())
+
     val usersInsertQuery = Users returning Users.map(_.id) into ((user, id) => user.copy(id = id))
     val ts = Timestamp.valueOf(java.time.OffsetDateTime.now().toLocalDateTime)
-    val hashed = hash(password)
-    val action = usersInsertQuery += UsersRow(0, name, email, hashed.password, ts, ts, None)
+    val hashed = hashWithSalt(password)
+    val action = usersInsertQuery += UsersRow(0, name.value, email.value, hashed.password, hashed.salt, ts, ts, None)
     val CustomerRole = 1
 
     execute(action) map { row =>
       execute(UserRoles += UserRolesRow(row.id, CustomerRole, ts))
-      User(row.id, row.username, row.email, row.passwordHash)
+
+      usersRowToUser(row)
     }
   }
 
-  def findByEmail(email: String) =
-    execute(Users.filter(_.email === email).take(1).result) map (_.headOption)
+  def findByUsername(username: String): Future[Option[User]] =
+    execute(Users.filter(_.username === username).take(1).result) map (_.headOption) map {
+      case None => None
+      case Some(row) => Some(usersRowToUser(row))
+    }
+
+  def findByEmail(email: String): Future[Option[User]] =
+    execute(Users.filter(_.email === email).take(1).result) map (_.headOption) map {
+      case None => None
+      case Some(row) => Some(usersRowToUser(row))
+    }
+
+  val usersRowToUser: Tables.UsersRow => User = { row =>
+    (for {
+      un <- Username(row.username)
+      em <- Email(row.email)
+    } yield User(row.id, un, em, HashedPassword(row.passwordHash, row.passwordSalt))).toList.head
+  }
 }
 

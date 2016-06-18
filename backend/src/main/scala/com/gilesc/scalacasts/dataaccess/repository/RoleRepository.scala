@@ -4,8 +4,6 @@ import java.sql.Timestamp
 
 import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.DatabaseProfile
-import com.gilesc.scalacasts.model.UserRole
-import com.gilesc.security.password.PasswordHashing
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
 
@@ -23,8 +21,6 @@ import scala.concurrent.Future
   */
 class RoleRepository[A <: JdbcProfile](override val profile: JdbcProfile) extends DatabaseProfile {
   import profile.api._
-
-  import scala.concurrent.ExecutionContext.Implicits.global
 
   case class RoleRow(id: Long, name: String, description: String)
 

@@ -1,4 +1,7 @@
 package com.gilesc.scalacasts
 
-case class User(id: Long, username: String, email: String, passwordHash: String)
+import com.gilesc.scalacasts.model.{Email, Username}
+import com.gilesc.security.password.HashedPassword
+
+case class User(id: Long, username: Username, email: Email, passwordHash: HashedPassword)
 

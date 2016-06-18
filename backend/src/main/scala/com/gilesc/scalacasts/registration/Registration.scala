@@ -1,39 +1,25 @@
 package com.gilesc.scalacasts.registration
 
+import cats.data.Xor
 import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
-import com.gilesc.scalacasts.dataaccess.repository.UserRepository
+import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.security.password.PasswordHashing
+import org.mindrot.jbcrypt.BCrypt
 
-import scala.concurrent.Future
+trait Registration extends PasswordHashing {
+  case class RegistrationContext(username: String, email: String, password: String)
+  case class RegistrationError(messages: List[String])
 
-import scala.concurrent.ExecutionContext.Implicits.global
+  val register: RegistrationContext => Xor[RegistrationError, User] = { cxt =>
+    def strToRegistrationError(value: String): RegistrationError = RegistrationError(List[String](value))
+    val hashWithSalt = hash(BCrypt.gensalt())
 
-case class UserId(underlying: Long) extends AnyVal
+    val user = for {
+      username <- Username(cxt.username)
+      email <- Email(cxt.email)
+      rawPassword <- RawPassword(cxt.password)
+    } yield User(0, username, email, hashWithSalt(rawPassword))
 
-abstract class Mailer {
-  def send(from: String, to: String, subject: String, body: String): Boolean = true
-}
-
-class UserMailer extends Mailer {
-  def welcome(user: User): Boolean = send("from", "to", "subject", "body")
-}
-
-case class RegistrationContext(username: String, email: String, password: String, passwordConfirmation: String) {
-  assert(username.length >= 5, "Username should be greater than 5 characters")
-  assert(password.length >= 8, "Password should be greater than 8 characters")
-  assert(password == passwordConfirmation, "Password and Confirmation don't match")
-}
-
-class Registration {
-  val repo = new UserRepository(MySqlDatabaseDriver)
-
-  def register(mailer: UserMailer)(cxt: RegistrationContext): Future[User] = {
-    repo.insert(cxt.username, cxt.email, cxt.password) map { user =>
-      mailer.welcome(user)
-
-      user
-    }
+    user.leftMap(strToRegistrationError)
   }
-
 }
-
