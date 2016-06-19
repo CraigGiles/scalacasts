@@ -13,12 +13,12 @@ trait RegistrationRepositories {
 
 trait Registration extends PasswordHashing {
   case class RegistrationContext(username: String, email: String, password: String)
-  case class RegistrationError(messages: List[String])
+  case class RegistrationError(message: String) extends Exception(message)
 
-  val register: RegistrationContext => Reader[RegistrationRepositories, Xor[RegistrationError, Future[User]]] = {
+  val register: RegistrationContext => Reader[RegistrationRepositories, Future[User]] = {
     cxt =>
       Reader((repos: RegistrationRepositories) => {
-        def strToRegistrationError(value: String): RegistrationError = RegistrationError(List[String](value))
+        def strToRegistrationError(value: String): RegistrationError = RegistrationError(value)
 
         val user = for {
           username <- Username(cxt.username)
@@ -26,7 +26,10 @@ trait Registration extends PasswordHashing {
           rawPassword <- RawPassword(cxt.password)
         } yield repos.user.insert(username, email, rawPassword)
 
-        user.leftMap(strToRegistrationError)
+        user.toEither match {
+          case Left(error) => Future.failed(strToRegistrationError(error))
+          case Right(userFuture) => userFuture
+        }
       })
   }
 }

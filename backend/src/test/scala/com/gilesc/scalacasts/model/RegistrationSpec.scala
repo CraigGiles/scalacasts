@@ -21,21 +21,11 @@ class RegistrationSpec extends TestCase with ScalaFutures with Registration {
         user <- register(cxt)(repos)
       } yield user
 
-      usr.isRight should be(true)
-      val u = Future.sequence(usr.toList)
-      whenReady(u) { userList =>
-        val user = userList.head
+      whenReady(usr) { user =>
         user.email.value should be(cxt.email)
         user.username.value should be(cxt.username)
         user.passwordHash.password should not be cxt.password
       }
-      //      whenReady(usr) { user =>
-      //        user.toOption.foreach { u =>
-      //          u.email.value should be(cxt.email)
-      //          u.username.value should be(cxt.username)
-      //          u.passwordHash.password should not be cxt.password
-      //        }
-      //      }
     }
   }
 
