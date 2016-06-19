@@ -1,5 +1,6 @@
 package com.gilesc.scalacasts
 
+import com.gilesc.scalacasts.model.{Tag, Description, Title, ContentType}
 import com.gilesc.scalacasts.screencast.{Scalacasts, ScreencastContext}
 import com.gilesc.scalacasts.testing.TestCase
 
