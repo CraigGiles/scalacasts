@@ -10,7 +10,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.mindrot.jbcrypt.BCrypt
 import slick.driver.JdbcProfile
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * CREATE TABLE IF NOT EXISTS `users` (
@@ -36,9 +36,9 @@ class UserRepository[A <: JdbcProfile]
   import profile.api._
   import com.gilesc.scalacasts.dataaccess.Tables._
 
-  import scala.concurrent.ExecutionContext.Implicits.global
+  //  import scala.concurrent.ExecutionContext.Implicits.global
 
-  def insert(name: Username, email: Email, password: RawPassword): Future[User] = {
+  def insert(name: Username, email: Email, password: RawPassword)(implicit ec: ExecutionContext): Future[User] = {
     logger.info("Inserting with name: {}, email: {}, password: {}", name.value, email.value, password.value)
     val hashWithSalt = hash(BCrypt.gensalt())
 
@@ -55,13 +55,13 @@ class UserRepository[A <: JdbcProfile]
     }
   }
 
-  def findByUsername(username: String): Future[Option[User]] =
+  def findByUsername(username: String)(implicit ec: ExecutionContext): Future[Option[User]] =
     execute(Users.filter(_.username === username).take(1).result) map (_.headOption) map {
       case None => None
       case Some(row) => Some(usersRowToUser(row))
     }
 
-  def findByEmail(email: String): Future[Option[User]] =
+  def findByEmail(email: String)(implicit ec: ExecutionContext): Future[Option[User]] =
     execute(Users.filter(_.email === email).take(1).result) map (_.headOption) map {
       case None => None
       case Some(row) => Some(usersRowToUser(row))

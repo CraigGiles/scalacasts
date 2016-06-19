@@ -1,6 +1,5 @@
 package com.gilesc.scalacasts
 
-import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
 import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
 import com.typesafe.scalalogging.LazyLogging
