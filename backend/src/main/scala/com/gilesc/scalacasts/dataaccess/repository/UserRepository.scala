@@ -36,8 +36,6 @@ class UserRepository[A <: JdbcProfile]
   import profile.api._
   import com.gilesc.scalacasts.dataaccess.Tables._
 
-  //  import scala.concurrent.ExecutionContext.Implicits.global
-
   def insert(name: Username, email: Email, password: RawPassword)(implicit ec: ExecutionContext): Future[User] = {
     logger.info("Inserting with name: {}, email: {}, password: {}", name.value, email.value, password.value)
     val hashWithSalt = hash(BCrypt.gensalt())
