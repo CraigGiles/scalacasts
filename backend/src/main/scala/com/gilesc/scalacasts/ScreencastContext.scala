@@ -1,9 +1,6 @@
 package com.gilesc.scalacasts.screencast
 
-import com.gilesc.scalacasts.ContentType
-import com.gilesc.scalacasts.Title
-import com.gilesc.scalacasts.Description
-import com.gilesc.scalacasts.Tag
+import com.gilesc.scalacasts.model.{ContentType, Description, Tag, Title}
 
 case class ScreencastContext(
   path: String,

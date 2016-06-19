@@ -15,6 +15,9 @@ object Example extends App with LazyLogging {
   val repo = new UserRepository()
   val number = Random.nextInt()
   val username = s"cg-$number"
+  /**
+    * Created by gilesc on 6/19/16.
+    */
   val email = s"em-$number"
   val password = "mypassword"
 

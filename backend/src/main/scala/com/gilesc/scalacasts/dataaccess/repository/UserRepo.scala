@@ -1,7 +1,6 @@
 package com.gilesc.scalacasts.dataaccess.repository
 
-import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.scalacasts.model.{User, Email, RawPassword, Username}
 
 import scala.concurrent.Future
 

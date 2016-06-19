@@ -1,6 +1,6 @@
 package com.gilesc.scalacasts.screencast
 
-import com.gilesc.scalacasts._
+import com.gilesc.scalacasts.model.{Tag, Title}
 import scala.concurrent.Future
 
 trait LibraryRepository {

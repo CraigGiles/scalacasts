@@ -2,9 +2,8 @@ package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
-import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.{DatabaseProfile, Tables}
-import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.scalacasts.model.{User, Email, RawPassword, Username}
 import com.gilesc.security.password.{HashedPassword, PasswordHashing}
 import com.typesafe.scalalogging.LazyLogging
 import org.mindrot.jbcrypt.BCrypt

@@ -1,7 +1,6 @@
 package com.gilesc.scalacasts.dataaccess.repository
 
-import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.model.{RawPassword, Email, Username}
+import com.gilesc.scalacasts.model.{User, RawPassword, Email, Username}
 import com.gilesc.security.password.PasswordHashing
 import org.mindrot.jbcrypt.BCrypt
 

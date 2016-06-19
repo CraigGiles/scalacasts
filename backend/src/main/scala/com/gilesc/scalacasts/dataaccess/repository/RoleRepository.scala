@@ -2,8 +2,8 @@ package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
-import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.DatabaseProfile
+import com.gilesc.scalacasts.model.User
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
 

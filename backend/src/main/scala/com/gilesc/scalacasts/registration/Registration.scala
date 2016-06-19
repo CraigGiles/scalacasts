@@ -1,9 +1,8 @@
 package com.gilesc.scalacasts.registration
 
-import cats.data.{Xor, Reader}
-import com.gilesc.scalacasts.User
+import cats.data.{Reader, Xor}
 import com.gilesc.scalacasts.dataaccess.repository.UserRepo
-import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.scalacasts.model.{User, Email, RawPassword, Username}
 import com.gilesc.security.password.PasswordHashing
 
 import scala.concurrent.Future
