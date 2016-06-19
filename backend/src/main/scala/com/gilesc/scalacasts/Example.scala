@@ -13,7 +13,7 @@ import scala.util.Random
 object Example extends App with LazyLogging {
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val repo = new UserRepository(MySqlDatabaseDriver)
+  val repo = new UserRepository()
   val number = Random.nextInt()
   val username = s"cg-$number"
   val email = s"em-$number"

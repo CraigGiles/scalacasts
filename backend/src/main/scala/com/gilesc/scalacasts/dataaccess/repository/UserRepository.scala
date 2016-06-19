@@ -28,7 +28,7 @@ import scala.concurrent.Future
   *
   * ) ENGINE=InnoDB;
   */
-class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
+class UserRepository[A <: JdbcProfile]
     extends DatabaseProfile
     with PasswordHashing
     with LazyLogging {
@@ -67,7 +67,7 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
       case Some(row) => Some(usersRowToUser(row))
     }
 
-  val usersRowToUser: Tables.UsersRow => User = { row =>
+  private[this] val usersRowToUser: Tables.UsersRow => User = { row =>
     (for {
       un <- Username(row.username)
       em <- Email(row.email)
