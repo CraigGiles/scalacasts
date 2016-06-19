@@ -1,7 +1,7 @@
 package com.gilesc.scalacasts.screencast
 
-import com.gilesc.scalacasts._
 import java.time.LocalTime
+import com.gilesc.scalacasts.Timestamps
 import com.gilesc.scalacasts.model.{Tag, Title, ContentType, Description}
 
 object Screencast {
@@ -18,16 +18,13 @@ object Screencast {
   }
 
   def apply(path: String, contentType: String, title: String, description: String, tags: String): Screencast = {
-    val timestamp = LocalTime.now()
-
-    new Screencast(
-      filePath = path,
-      contentType = contentType,
-      title = title,
-      description = description,
-      tags = tags.split(",").map(t => Tag(t.trim)).toSet,
-      created_at = timestamp,
-      updated_at = timestamp)
+    this.apply(
+      ScreencastContext(
+        path,
+        ContentType(contentType),
+        Title(title),
+        Description(description),
+        tags.split(",").map(t => Tag(t.trim)).toSet))
   }
 }
 
