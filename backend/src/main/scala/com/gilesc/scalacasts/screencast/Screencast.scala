@@ -1,12 +1,13 @@
 package com.gilesc.scalacasts.screencast
 
-import java.time.LocalTime
+import java.time.ZonedDateTime
+
 import com.gilesc.scalacasts.Timestamps
-import com.gilesc.scalacasts.model.{Tag, Title, ContentType, Description}
+import com.gilesc.scalacasts.model.{ContentType, Description, Tag, Title}
 
 object Screencast {
   def apply(cxt: ScreencastContext): Screencast = {
-    val timestamp = LocalTime.now()
+    val timestamp = ZonedDateTime.now()
     new Screencast(
       filePath = cxt.path,
       contentType = cxt.contentType,
@@ -34,7 +35,7 @@ case class Screencast(
   title: Title,
   description: Description,
   tags: Set[Tag],
-  created_at: LocalTime,
-  updated_at: LocalTime,
-  deleted_at: Option[LocalTime] = None) extends Timestamps
+  created_at: ZonedDateTime,
+  updated_at: ZonedDateTime,
+  deleted_at: Option[ZonedDateTime] = None) extends Timestamps
 
