@@ -11,5 +11,7 @@ object NonEmptyString {
   }
 }
 
-class NonEmptyString private (value: String)
+class NonEmptyString private (value: String) {
+  override val toString: String = value
+}
 
