@@ -1,17 +1,12 @@
-package com.gilesc.scalacasts.dataaccess
+package com.gilesc.scalacasts.dataaccess.repository
 
 import com.gilesc.scalacasts.User
-import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.scalacasts.model.{RawPassword, Email, Username}
 import com.gilesc.security.password.PasswordHashing
 import org.mindrot.jbcrypt.BCrypt
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-trait UserRepo {
-  def insert(username: Username, email: Email, rawPassword: RawPassword): Future[User]
-  def find(username: Username): Future[Option[User]]
-}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object InMemoryUserRepo {
   var users = List.empty[User]
@@ -28,4 +23,3 @@ class InMemoryUserRepo extends UserRepo with PasswordHashing {
 
   override def find(username: Username): Future[Option[User]] = Future(users.find(_.username == username))
 }
-

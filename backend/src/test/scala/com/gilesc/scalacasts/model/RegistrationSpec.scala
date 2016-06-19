@@ -1,6 +1,6 @@
 package com.gilesc.scalacasts.model
 
-import com.gilesc.scalacasts.dataaccess.InMemoryUserRepo
+import com.gilesc.scalacasts.dataaccess.repository.InMemoryUserRepo
 import com.gilesc.scalacasts.registration.{Registration, RegistrationRepositories}
 import com.gilesc.scalacasts.testing.TestCase
 import org.scalatest.concurrent.ScalaFutures

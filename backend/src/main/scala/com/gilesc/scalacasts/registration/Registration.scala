@@ -1,7 +1,7 @@
 package com.gilesc.scalacasts.registration
 
 import cats.data.Reader
-import com.gilesc.scalacasts.dataaccess.UserRepo
+import com.gilesc.scalacasts.dataaccess.repository.UserRepo
 import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
 import com.gilesc.security.password.PasswordHashing
 
