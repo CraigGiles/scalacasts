@@ -2,6 +2,7 @@ package com.gilesc.scalacasts.screencast
 
 import com.gilesc.scalacasts._
 import java.time.LocalTime
+import com.gilesc.scalacasts.model.{Tag, Title, ContentType, Description}
 
 object Screencast {
   def apply(cxt: ScreencastContext): Screencast = {

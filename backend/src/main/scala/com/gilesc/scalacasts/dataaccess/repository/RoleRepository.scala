@@ -2,8 +2,8 @@ package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
-import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.DatabaseProfile
+import com.gilesc.scalacasts.model.User
 import slick.driver.JdbcProfile
 import slick.profile.SqlProfile.ColumnOption.SqlType
 
@@ -19,7 +19,7 @@ import scala.concurrent.Future
   *   PRIMARY KEY (`id`)
   * ) ENGINE=InnoDB;
   */
-class RoleRepository[A <: JdbcProfile](override val profile: JdbcProfile) extends DatabaseProfile {
+class RoleRepository[A <: JdbcProfile] extends DatabaseProfile {
   import profile.api._
 
   case class RoleRow(id: Long, name: String, description: String)

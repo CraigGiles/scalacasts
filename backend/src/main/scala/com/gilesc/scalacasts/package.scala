@@ -1,5 +1,7 @@
 package com.gilesc
 
+import com.gilesc.scalacasts.model.{ContentType, Description, Tag, Title}
+
 import scala.language.implicitConversions
 
 package object scalacasts {

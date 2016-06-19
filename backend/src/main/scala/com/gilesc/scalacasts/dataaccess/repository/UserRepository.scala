@@ -2,15 +2,14 @@ package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
-import com.gilesc.scalacasts.User
 import com.gilesc.scalacasts.dataaccess.{DatabaseProfile, Tables}
-import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.gilesc.scalacasts.model.{User, Email, RawPassword, Username}
 import com.gilesc.security.password.{HashedPassword, PasswordHashing}
 import com.typesafe.scalalogging.LazyLogging
 import org.mindrot.jbcrypt.BCrypt
 import slick.driver.JdbcProfile
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * CREATE TABLE IF NOT EXISTS `users` (
@@ -28,7 +27,7 @@ import scala.concurrent.Future
   *
   * ) ENGINE=InnoDB;
   */
-class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
+class UserRepository[A <: JdbcProfile]
     extends DatabaseProfile
     with PasswordHashing
     with LazyLogging {
@@ -36,9 +35,7 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
   import profile.api._
   import com.gilesc.scalacasts.dataaccess.Tables._
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-
-  def insert(name: Username, email: Email, password: RawPassword): Future[User] = {
+  def insert(name: Username, email: Email, password: RawPassword)(implicit ec: ExecutionContext): Future[User] = {
     logger.info("Inserting with name: {}, email: {}, password: {}", name.value, email.value, password.value)
     val hashWithSalt = hash(BCrypt.gensalt())
 
@@ -55,19 +52,19 @@ class UserRepository[A <: JdbcProfile](override val profile: JdbcProfile)
     }
   }
 
-  def findByUsername(username: String): Future[Option[User]] =
+  def findByUsername(username: String)(implicit ec: ExecutionContext): Future[Option[User]] =
     execute(Users.filter(_.username === username).take(1).result) map (_.headOption) map {
       case None => None
       case Some(row) => Some(usersRowToUser(row))
     }
 
-  def findByEmail(email: String): Future[Option[User]] =
+  def findByEmail(email: String)(implicit ec: ExecutionContext): Future[Option[User]] =
     execute(Users.filter(_.email === email).take(1).result) map (_.headOption) map {
       case None => None
       case Some(row) => Some(usersRowToUser(row))
     }
 
-  val usersRowToUser: Tables.UsersRow => User = { row =>
+  private[this] val usersRowToUser: Tables.UsersRow => User = { row =>
     (for {
       un <- Username(row.username)
       em <- Email(row.email)

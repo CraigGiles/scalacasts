@@ -1,6 +1,5 @@
 package com.gilesc.scalacasts
 
-import com.gilesc.scalacasts.dataaccess.MySqlDatabaseDriver
 import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
 import com.typesafe.scalalogging.LazyLogging
@@ -13,9 +12,12 @@ import scala.util.Random
 object Example extends App with LazyLogging {
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  val repo = new UserRepository(MySqlDatabaseDriver)
+  val repo = new UserRepository()
   val number = Random.nextInt()
   val username = s"cg-$number"
+  /**
+    * Created by gilesc on 6/19/16.
+    */
   val email = s"em-$number"
   val password = "mypassword"
 
