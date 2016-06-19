@@ -18,9 +18,9 @@ trait LibraryRepository {
 trait ScreencastRepositories {
   val library: LibraryRepository
 }
+case class ScreencastContext(path: String, contentType: String, title: String, description: String, tags: String)
 
 trait ScreencastLibrary {
-  case class ScreencastContext(path: String, contentType: String, title: String, description: String, tags: String)
   case class ScreencastError(messages: List[String])
 
   def add(cxt: ScreencastContext) = Reader((repos: ScreencastRepositories) => {
