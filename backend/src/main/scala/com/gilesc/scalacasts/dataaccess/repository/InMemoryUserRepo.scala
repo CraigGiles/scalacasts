@@ -22,4 +22,5 @@ class InMemoryUserRepo extends UserRepo with PasswordHashing {
   }
 
   override def find(username: Username): Future[Option[User]] = Future(users.find(_.username == username))
+  override def find(email: Email): Future[Option[User]] = Future(users.find(_.email == email))
 }
