@@ -7,17 +7,15 @@ import scala.reflect.io.Path
 
 trait LibraryRepository {
   def add(path: Path, contentType: ContentType, title: Title, description: Description, tags: Set[Tag]): Future[Screencast]
-
   def remove(title: Title): Future[Int]
-
   def find(name: Title): Future[List[Screencast]]
-
   def find(tags: List[Tag]): Future[List[Screencast]]
 }
 
 trait ScreencastRepositories {
   val library: LibraryRepository
 }
+
 case class ScreencastContext(path: String, contentType: String, title: String, description: String, tags: String)
 
 trait ScreencastLibrary {
@@ -26,11 +24,11 @@ trait ScreencastLibrary {
   def add(cxt: ScreencastContext) = Reader((repos: ScreencastRepositories) => {
     val path = Path(cxt.path)
     val tags = cxt.tags.split(",").map(t => Tag(t.trim)).toSet
-    val title = Title(cxt.title)
     val description = Description(cxt.description)
 
-    val sc: Xor[IllegalArgumentException, Future[Screencast]] = for {
+    val sc = for {
       ct <- ContentType(cxt.contentType)
+      title <- Title(cxt.title)
     } yield repos.library.add(path, ct, title, description, tags)
 
     if (sc.isLeft) sc.leftMap(msg => ScreencastError(List(msg.getMessage)))

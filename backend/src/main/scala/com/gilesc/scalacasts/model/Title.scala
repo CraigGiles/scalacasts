@@ -1,7 +1,9 @@
 package com.gilesc.scalacasts.model
 
-/**
-  * Created by gilesc on 6/19/16.
-  */
-case class Title(underlying: String) extends AnyVal {
+import com.gilesc.util.NonEmptyString
+
+object Title {
+  def apply(value: String) = NonEmptyString(value) map (new Title(_))
 }
+
+case class Title private (value: NonEmptyString)
