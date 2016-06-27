@@ -21,19 +21,16 @@ case class ScreencastContext(path: String, contentType: String, title: String, d
 trait ScreencastLibrary {
   case class ScreencastError(messages: List[String])
 
-  def add(cxt: ScreencastContext) = Reader((repos: ScreencastRepositories) => {
-    val path = Path(cxt.path)
-    val tags = cxt.tags.split(",").map(t => Tag(t.trim)).toSet
-    val description = Description(cxt.description)
+  def add(cxt: ScreencastContext): Reader[ScreencastRepositories, Future[Screencast]] =
+    Reader((repos: ScreencastRepositories) => {
+      val path = Path(cxt.path)
+      val ct = ContentType(cxt.contentType)
+      val title = Title(cxt.title)
+      val tags = cxt.tags.split(",").map(t => Tag(t.trim)).toSet
+      val description = Description(cxt.description)
 
-    val sc = for {
-      ct <- ContentType(cxt.contentType)
-      title <- Title(cxt.title)
-    } yield repos.library.add(path, ct, title, description, tags)
-
-    if (sc.isLeft) sc.leftMap(msg => ScreencastError(List(msg.getMessage)))
-    else Xor.right(sc.toList.head)
-  })
+      repos.library.add(path, ct, title, description, tags)
+    })
 
   def find(title: Title): Reader[ScreencastRepositories, Xor[ScreencastError, Option[Screencast]]] = ???
   def find(tags: Set[Tag]): Reader[ScreencastRepositories, Xor[ScreencastError, List[Screencast]]] = ???

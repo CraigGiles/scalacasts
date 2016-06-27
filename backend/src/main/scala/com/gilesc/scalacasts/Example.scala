@@ -1,7 +1,9 @@
 package com.gilesc.scalacasts
 
+import com.gilesc.scalacasts.dataaccess.DatabaseProfile
 import com.gilesc.scalacasts.dataaccess.repository.UserRepository
 import com.gilesc.scalacasts.model.{Email, RawPassword, Username}
+import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.Await
@@ -11,13 +13,9 @@ import scala.util.Random
 
 object Example extends App with LazyLogging {
   import scala.concurrent.ExecutionContext.Implicits.global
-
   val repo = new UserRepository()
   val number = Random.nextInt()
   val username = s"cg-$number"
-  /**
-    * Created by gilesc on 6/19/16.
-    */
   val email = s"em-$number"
   val password = "mypassword"
 
@@ -25,9 +23,11 @@ object Example extends App with LazyLogging {
   val em = Email(email).toList.head
   val pw = RawPassword(password).toList.head
 
-  val something = repo.insert(un, _: Email, _: RawPassword)
+  val config = ConfigFactory.load()
+  val db = DatabaseProfile(config)
+
   val myresult = for {
-    insertResult <- repo.insert(un, em, pw)
+    insertResult <- repo.insert(un, em, pw)(db)
   } yield insertResult
 
   myresult onComplete { r =>
