@@ -27,7 +27,7 @@ import scala.concurrent.Future
   *
   * ) ENGINE=InnoDB;
   */
-class UserRepository[A <: JdbcProfile]
+class UserRepository
     extends PasswordHashing
     with LazyLogging {
 

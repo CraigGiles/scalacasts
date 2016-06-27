@@ -21,19 +21,6 @@ import scala.concurrent.Future
   */
 class RoleRepository[A <: JdbcProfile] {
   import com.gilesc.scalacasts.dataaccess.Tables._
-  //  case class RoleRow(id: Long, name: String, description: String)
-  //
-  //  class RoleTable(tag: Tag) extends Table[RoleRow](tag, "roles") {
-  //    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  //    def name = column[String]("name")
-  //    def description = column[String]("description")
-  //    def created_at = column[Timestamp]("created_at", SqlType("timestamp not null default CURRENT_TIMESTAMP"))
-  //    def updated_at = column[Timestamp]("updated_at", SqlType("timestamp not null default CURRENT_TIMESTAMP"))
-  //
-  //    override def * = (id, name, description) <> (RoleRow.tupled, RoleRow.unapply)
-  //  }
-  //
-  //  private[this] lazy val RolesTable = TableQuery[RoleTable]
 
   def insert(name: String, description: String): DatabaseProfile => Future[RolesRow] = { database =>
     import database._

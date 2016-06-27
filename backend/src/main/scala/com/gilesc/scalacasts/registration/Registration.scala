@@ -1,17 +1,18 @@
 package com.gilesc.scalacasts.registration
 
-import cats.data.{Reader, Xor}
-import com.gilesc.scalacasts.dataaccess.repository.UserRepo
-import com.gilesc.scalacasts.model.{User, Email, RawPassword, Username}
+import cats.data.Reader
+import com.gilesc.scalacasts.DatabaseBootstrap
+import com.gilesc.scalacasts.dataaccess.repository.UserRepository
+import com.gilesc.scalacasts.model.{Email, RawPassword, User, Username}
 import com.gilesc.security.password.PasswordHashing
 
 import scala.concurrent.Future
 
 trait RegistrationRepositories {
-  val user: UserRepo
+  val user: UserRepository
 }
 
-trait Registration extends PasswordHashing {
+trait Registration extends PasswordHashing with DatabaseBootstrap {
   case class RegistrationContext(username: String, email: String, password: String)
   case class RegistrationError(message: String) extends Exception(message)
 
@@ -28,7 +29,7 @@ trait Registration extends PasswordHashing {
 
         user.toEither match {
           case Left(error) => Future.failed(strToRegistrationError(error))
-          case Right(userFuture) => userFuture
+          case Right(userFuture) => userFuture(db)
         }
       })
   }

@@ -11,8 +11,14 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.Random
 
-object Example extends App with LazyLogging {
-  import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global
+
+trait DatabaseBootstrap {
+  val config = ConfigFactory.load()
+  val db = DatabaseProfile(config)
+}
+
+object Example extends App with LazyLogging with DatabaseBootstrap {
   val repo = new UserRepository()
   val number = Random.nextInt()
   val username = s"cg-$number"
@@ -22,9 +28,6 @@ object Example extends App with LazyLogging {
   val un = Username(username).toList.head
   val em = Email(email).toList.head
   val pw = RawPassword(password).toList.head
-
-  val config = ConfigFactory.load()
-  val db = DatabaseProfile(config)
 
   val myresult = for {
     insertResult <- repo.insert(un, em, pw)(db)
