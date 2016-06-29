@@ -53,21 +53,21 @@ class UserRepository
     }
   }
 
-  def findByUsername(username: String): DatabaseProfile => Future[Option[User]] = { database =>
+  def find(username: Username): DatabaseProfile => Future[Option[User]] = { database =>
     import database._
     import database.profile.api._
 
-    execute(Users.filter(_.username === username).take(1).result) map (_.headOption) map {
+    execute(Users.filter(_.username === username.value).take(1).result) map (_.headOption) map {
       case None => None
       case Some(row) => Some(usersRowToUser(row))
     }
   }
 
-  def findByEmail(email: String): DatabaseProfile => Future[Option[User]] = { database =>
+  def find(email: Email): DatabaseProfile => Future[Option[User]] = { database =>
     import database._
     import database.profile.api._
 
-    execute(Users.filter(_.email === email).take(1).result) map (_.headOption) map {
+    execute(Users.filter(_.email === email.value).take(1).result) map (_.headOption) map {
       case Some(row) => Some(usersRowToUser(row))
       case None => None
     }
