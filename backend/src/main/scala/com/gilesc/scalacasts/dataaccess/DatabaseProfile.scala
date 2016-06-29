@@ -12,7 +12,7 @@ object DatabaseProfile {
       case _ => H2Driver
     }
 
-    new DatabaseProfile(profile)(ec)
+    new DatabaseProfile(profile)
   }
 }
 
@@ -22,18 +22,3 @@ class DatabaseProfile(val profile: JdbcProfile)(implicit val ec: ExecutionContex
   val db = Database.forConfig("scalacasts.database")
   def execute[T](action: DBIO[T]): Future[T] = db.run(action)
 }
-
-//trait DatabaseProfile {
-//  lazy val profile: JdbcProfile = load(ConfigFactory.load())
-//  import profile.api._
-//
-//  val db = Database.forConfig("scalacasts.database")
-//  def execute[T](action: DBIO[T]): Future[T] = db.run(action)
-//
-//  private[this] val load: Config => JdbcProfile = { config =>
-//    config.getString("scalacasts.database.profile") match {
-//      case "mysql" => MySqlDatabaseDriver
-//      case _ => H2Driver
-//    }
-//  }
-//}

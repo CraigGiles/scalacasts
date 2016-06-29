@@ -16,20 +16,19 @@ trait Registration extends PasswordHashing with DatabaseBootstrap {
   case class RegistrationContext(username: String, email: String, password: String)
   case class RegistrationError(message: String) extends Exception(message)
 
-  val register: RegistrationContext => Reader[RegistrationRepositories, Future[User]] = {
-    cxt =>
+  val register: RegistrationContext => Reader[RegistrationRepositories, Future[User]] = { cxt =>
       Reader((repos: RegistrationRepositories) => {
         def strToRegistrationError(value: String): RegistrationError = RegistrationError(value)
 
-        val user = for {
+        val insertFunction = for {
           username <- Username(cxt.username)
           email <- Email(cxt.email)
           rawPassword <- RawPassword(cxt.password)
         } yield repos.user.insert(username, email, rawPassword)
 
-        user.toEither match {
+        insertFunction.toEither match {
           case Left(error) => Future.failed(strToRegistrationError(error))
-          case Right(userFuture) => userFuture(db)
+          case Right(funct) => funct(db)
         }
       })
   }
