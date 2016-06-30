@@ -2,12 +2,8 @@ package com.gilesc.scalacasts.dataaccess.repository
 
 import java.sql.Timestamp
 
-import com.gilesc.scalacasts.dataaccess.repository.RoleRepository.RoleId
-import com.gilesc.scalacasts.dataaccess.repository.UserRoles.Customer
-import com.gilesc.scalacasts.dataaccess.{Tables, DatabaseProfile}
+import com.gilesc.scalacasts.dataaccess.DatabaseProfile
 import com.gilesc.scalacasts.model.User
-import slick.driver.JdbcProfile
-import slick.profile.SqlProfile.ColumnOption.SqlType
 
 import scala.concurrent.Future
 
@@ -68,9 +64,7 @@ class RoleRepository extends UserRoles {
       roles <- Roles if roles.id == userRoles.roleId
     } yield roles
 
-    val something: Future[Seq[Tables.RolesRow]] = execute(query.result)
-
-    something map(_.map(rolesRowToRole))
+    execute(query.result) map(_.map(rolesRowToRole))
   }
 
 }
